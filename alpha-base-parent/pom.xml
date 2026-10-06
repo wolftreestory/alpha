@@ -380,6 +380,13 @@
 			    <version>3.0.5</version>
 			</dependency>
 			
+			<!-- OSHI: 시스템 정보(CPU/메모리/디스크/센서 등) 조회 -->
+			<dependency>
+				<groupId>com.github.oshi</groupId>
+				<artifactId>oshi-core</artifactId>
+				<version>6.4.0</version>
+			</dependency>
+						
 		</dependencies>
 		
 	</dependencyManagement>
