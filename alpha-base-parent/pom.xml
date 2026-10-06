@@ -379,7 +379,13 @@
 			    <artifactId>jasypt-spring-boot-starter</artifactId>
 			    <version>3.0.5</version>
 			</dependency>
-			
+						
+			<dependency>
+			    <groupId>org.openjdk.jol</groupId>
+			    <artifactId>jol-core</artifactId>
+			    <version>0.17</version>
+			</dependency>
+						
 			<!-- OSHI: 시스템 정보(CPU/메모리/디스크/센서 등) 조회 -->
 			<dependency>
 				<groupId>com.github.oshi</groupId>
