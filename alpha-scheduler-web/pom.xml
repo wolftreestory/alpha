@@ -46,7 +46,7 @@
 			<properties>
 				<deployTarget>local</deployTarget>
 				<deployProfile>profile.local</deployProfile>
-				<project.meta.basePathPrefix>/alpha.</project.meta.basePathPrefix>
+				<project.meta.basePathPrefix>/Users/wolftree/azure.data/alpha.</project.meta.basePathPrefix>
 			</properties>
 		</profile>
 		<profile>
