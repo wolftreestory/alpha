@@ -25,7 +25,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.fullReCompile>false</maven.compiler.fullReCompile>
         <maven.test.skip>true</maven.test.skip>
-        <alpha.git.url>http://support.apollo.co.kr/gitlab/alpha</alpha.git.url>
+        <alpha.git.url>https://github.com/wolftreestory/alpha</alpha.git.url>
     </properties>
 
     <!-- 배포 관리 (Nexus Repository) -->
