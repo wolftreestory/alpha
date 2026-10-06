@@ -1,0 +1,142 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.alpha</groupId>
+	<artifactId>alpha-batch-pack2</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>${project.artifactId}</name>
+	<packaging>jar</packaging>
+	<description>alpha 배치 pack2 : ${project.meta.group}/${project.meta.service}</description>
+
+	<parent>
+		<groupId>com.alpha.base</groupId>
+		<artifactId>alpha-base-parent</artifactId>
+		<version>x.x.x-SNAPSHOT</version>
+	</parent>
+	
+	<properties>
+		<project.meta.group>alpha</project.meta.group>
+		<project.meta.service>batch-pack2</project.meta.service>
+		<project.meta.basePathPrefix>/app/</project.meta.basePathPrefix>
+		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>	
+    	<maven.compiler.fullReCompile>false</maven.compiler.fullReCompile>
+		<maven.test.skip>true</maven.test.skip>
+		
+		<project.current.build.name>${project.artifactId}</project.current.build.name>
+		<project.current.build.revision/>
+		<project.current.build.branch/>					
+		<project.current.build.timestamp/>	
+	</properties>
+
+	<scm>
+	    <connection>scm:git:${alpha.git.url}/alpha-batch.git</connection>
+	</scm>
+
+  	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<deployTarget>local</deployTarget>
+				<deployProfile>profile.local</deployProfile>
+				<project.meta.basePathPrefix>/alpha.</project.meta.basePathPrefix>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<deployTarget>dev</deployTarget>
+				<deployProfile>profile.dev</deployProfile>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<deployTarget>prod</deployTarget>
+				<deployProfile>profile.prod</deployProfile>
+			</properties>
+		</profile>		
+	</profiles>
+	
+	<build>
+		<finalName>${project.current.build.name}-${deployTarget}-${project.version}</finalName>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources/profiles/${deployProfile}</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+				<configuration>
+					<!-- <shortRevisionLength>5</shortRevisionLength> -->
+                    <revisionOnScmFailure>noScm</revisionOnScmFailure>
+                    <buildNumberPropertyName>project.current.build.revision</buildNumberPropertyName>	
+					<scmBranchPropertyName>project.current.build.branch</scmBranchPropertyName>
+					<timestampPropertyName>project.current.build.timestamp</timestampPropertyName>
+                    <timestampFormat>yyyy.MM.dd HH:mm:ss z</timestampFormat>
+				</configuration> 
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>	
+	
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>                 
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Revision>${project.current.build.revision}</Implementation-Revision>
+							<Implementation-ScmBranch>${project.current.build.branch}</Implementation-ScmBranch>							
+							<Implementation-BuildTime>${project.current.build.timestamp}</Implementation-BuildTime>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+					
+		</plugins>
+	</build>
+	
+	<dependencies>
+	
+		<dependency>
+			<groupId>com.alpha.base</groupId>
+			<artifactId>alpha-base-batch</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
+</project>

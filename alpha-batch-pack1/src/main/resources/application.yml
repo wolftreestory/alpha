@@ -1,0 +1,145 @@
+##############################################################################################################
+# common(default)
+##############################################################################################################
+project: 
+  # 프로젝트식별을 위해 사용됨. (pom.xml에서 값을 찾음)
+  meta.group: '@project.meta.group@'
+  meta.service: '@project.meta.service@'
+  meta.basePathPrefix: '@project.meta.basePathPrefix@'
+  groupId: '@project.groupId@'
+  artifact: '@project.artifactId@'
+  version: '@project.version@'
+  name: '@project.name@'
+  description: '@project.description@'
+  build:
+    finalName: '@project.build.finalName@'
+    revision: '@project.current.build.revision@'
+    branch: '@project.current.build.branch@'
+    timestamp: '@project.current.build.timestamp@'
+   
+logging:
+  file:  
+    name: ${project.meta.basePathPrefix}logs/${project.name}-${spring.batch.job.names}/${project.name}-${spring.batch.job.names}-@date@
+  level:
+   root: debug # Level : ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF
+   jdbc:
+    #connection : OFF  #열려있는 모든 번호와 연결 수립 및 해제 이벤트를 기록
+    #audit: OFF #ResultSet을 제외한 모든 JDBC 호출 정보
+    #resultset: OFF #ResultSet을 포함한 모든 JDBC 호출 정보
+    #sqlonly: OFF #SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문
+    #sqltiming: OFF #SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보
+    #resultsettable: OFF #SQL 결과 조회된 데이터
+  
+spring:
+  profiles.active: local
+  application.name: ${project.name}
+  cloud.config.enabled: false	
+  main.web-application-type: none #애플리케이션 실행 후 종료됨(servlet인 경우 서버로 기동)
+  batch:
+    job: 
+      enabled: true #스프링 부트 시작시 등록되어 있는 job들이 실행
+      domainScope: 
+
+alpha:
+  messageSource:
+    baseNames:
+      - classpath:message/message-biz
+  batch:
+    fileBase: ${project.meta.basePathPrefix}data/batch
+
+---
+##############################################################################################################
+# prod
+##############################################################################################################
+spring:
+  config.activate.on-profile: prod  
+
+---
+##############################################################################################################
+# dev
+##############################################################################################################
+spring:
+  config.activate.on-profile: dev 
+
+alpha: 
+  datasource:
+    batch: # 개발환경 스프링배치 metaDB로 반드시 localhost로 접속해야 한다.
+      driverClassName: org.h2.Driver
+      jdbcUrl: jdbc:h2:tcp://localhost:7010/~/batch
+      #jdbcUrl: jdbc:h2:mem:batch
+      username: sa
+      password:
+    domain:
+      board: 
+        tag: "sample2Job을 위한 h2DB:board"
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:file:${project.meta.basePathPrefix}data/h2/board
+        username: sa
+        password:
+      score:
+        tag: "sample2Job을 위한 h2DB:score"
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:file:${project.meta.basePathPrefix}data/h2/score
+        username: sa
+        password:  
+  batch:
+    sample1Job:
+      defaultDomainScope:
+      workApi: http://dev.alpha.co.kr/xtra/boards/v1/
+      uploadApi: http://dev.alpha.co.kr/xtra/file/v1/attach/fileUpload
+    sample2Job:
+      defaultDomainScope: board, score
+      downloadApi: http://dev.alpha.co.kr/xtra/file/v1/attach/fileDownload/recent
+      downloadApiParam: "{'serverStoreDirPath':'${project.meta.basePathPrefix}data/xtra','fileName':'sample1Job-sendFile'}"
+      remoteHost: dev.apollo.co.kr
+      remotePath: ${project.meta.basePathPrefix}data
+      username: blue
+      keyPath: ${project.meta.basePathPrefix}data/key/id_rsa
+      
+---
+##############################################################################################################
+# local
+##############################################################################################################
+spring:
+  config.activate.on-profile: local
+  batch.job: 
+    enabled: true
+    names: dummyJob #sample1Job #,sample2Job
+    domainScope: 
+
+alpha: 
+  datasource:
+    batch: # 로컬환경 스프링배치 metaDB는 휘발성 인메모리DB를 사용한다.
+      driverClassName: org.h2.Driver
+      jdbcUrl: jdbc:h2:mem:batch
+      username: sa
+      password:    
+    domain:
+      board: 
+        tag: "sample2Job을 위한 h2DB:board"
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:file:/azure.data/h2/board
+        username: sa
+        password:
+      score:
+        tag: "sample2Job을 위한 h2DB:score"
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:file:/azure.data/h2/score
+        username: sa
+        password:
+  batch:
+    sample1Job:
+      defaultDomainScope: 
+      workApi: http://localhost:9970/xtra/boards/v1/
+      uploadApi: http://localhost:9970/xtra/file/v1/attach/fileUpload
+    sample2Job:
+      defaultDomainScope: board, score
+      downloadApi: http://localhost:9970/xtra/file/v1/attach/fileDownload/recent
+      downloadApiParam: "{'serverStoreDirPath':'${project.meta.basePathPrefix}data/xtra','fileName':'sample1Job-sendFile'}"
+      remoteHost: 127.0.0.1
+      remotePath: ${project.meta.basePathPrefix}data
+      username: blue
+      keyPath: ${project.meta.basePathPrefix}data/key/id_rsa
+
+##############################################################################################################
+

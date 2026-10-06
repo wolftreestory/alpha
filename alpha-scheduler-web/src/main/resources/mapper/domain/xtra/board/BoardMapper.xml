@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="com.alpha.opus.domain.xtra.board.mapper.BoardMapper">
+
+	<sql id="selectBase">
+		SELECT
+			IDX AS no
+			,TITLE AS title
+			,CONTENT AS content
+			,REG_NAME AS name
+			,REG_DATE AS regDate
+			,MOD_DATE AS modDate
+		FROM TB_BOARD
+		WHERE 1=1
+		<trim>
+		<if test="boardVo!=null">
+			<if test="boardVo.no!=null and boardVo.no>0"><![CDATA[AND IDX = #{boardVo.no}]]></if>
+			<if test="boardVo.title!=null and !boardVo.title.equals('')"><![CDATA[AND TITLE LIKE '%'||#{boardVo.title}||'%']]></if>
+			<if test="boardVo.content!=null and !boardVo.content.equals('')"><![CDATA[AND CONTENT LIKE '%'||#{boardVo.content}||'%']]></if>
+			<if test="boardVo.name!=null and !boardVo.name.equals('')"><![CDATA[AND REG_NAME LIKE '%'||#{boardVo.regName}||'%']]></if>
+		</if>
+		<if test="foreach!=null">
+			<if test="foreach.size!=0">AND IDX IN <foreach item="item" index="index" collection="foreach" open="(" separator="," close=")">#{item}</foreach></if>
+		</if>
+		</trim>
+		Order By no
+	</sql>
+
+    <select id="selectTotalCount" resultType="int">
+		SELECT count(*) AS totalCount
+		FROM (<include refid="selectBase"/>) A
+    </select>
+    
+    <select id="select" resultType="com.alpha.opus.domain.xtra.board.vo.BoardVo">
+    	SELECT A.* 
+    	FROM (<include refid="selectBase"/>) A
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="no">
+		INSERT INTO TB_BOARD (
+			TITLE
+			,CONTENT
+			,REG_NAME
+			,REG_DATE
+		) VALUES (
+			#{title, jdbcType=VARCHAR}
+			,#{content, jdbcType=VARCHAR}
+			,#{name, jdbcType=VARCHAR}
+			,now()
+		)    		
+    </insert>
+
+    <update id="update">
+		UPDATE TB_BOARD
+		SET
+			TITLE = #{title, jdbcType=VARCHAR}			
+			,CONTENT = #{content, jdbcType=VARCHAR}			
+			,REG_NAME = #{name, jdbcType=VARCHAR}
+			,MOD_DATE = now()
+		WHERE 1=1
+		AND IDX = #{no}
+    </update>
+
+    <delete id="delete">
+		DELETE FROM TB_BOARD WHERE IDX = #{no}
+    </delete>
+
+    <delete id="deleteAll">
+		DELETE FROM TB_BOARD
+    </delete>
+    
+</mapper>

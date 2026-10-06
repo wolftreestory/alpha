@@ -1,0 +1,107 @@
+##############################################################################################################
+# common(default)
+##############################################################################################################
+project: 
+  # 프로젝트식별을 위해 사용됨. (pom.xml에서 값을 찾음)
+  meta.group: '@project.meta.group@'
+  meta.service: '@project.meta.service@'
+  meta.basePathPrefix: '@project.meta.basePathPrefix@'
+  groupId: '@project.groupId@'
+  artifact: '@project.artifactId@'
+  version: '@project.version@'
+  name: '@project.name@'
+  description: '@project.description@'
+  build:
+    finalName: '@project.build.finalName@'
+    revision: '@project.current.build.revision@'
+    branch: '@project.current.build.branch@'
+    timestamp: '@project.current.build.timestamp@'
+    
+logging:
+  file:  
+    name: ${project.meta.basePathPrefix}logs/${project.name}/${project.name}
+    max-size: 20MB
+    max-history: 10
+  level:
+   root: DEBUG # Level : ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF
+   jdbc:
+    #connection : OFF  #열려있는 모든 번호와 연결 수립 및 해제 이벤트를 기록
+    #audit: OFF #ResultSet을 제외한 모든 JDBC 호출 정보
+    #resultset: OFF #ResultSet을 포함한 모든 JDBC 호출 정보
+    #sqlonly: OFF #SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문
+    #sqltiming: OFF #SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보
+    #resultsettable: OFF #SQL 결과 조회된 데이터
+
+server:
+  shutdown: graceful
+  tomcat:
+    uri-encoding: UTF-8
+  error:
+    include-exception: true
+    include-stacktrace: always
+    
+spring:
+  profiles.active: local
+  application.name: ${project.name}
+  cloud.config.enabled: false
+
+springdoc:
+  default-consumes-media-type: application/json # request media type, default: application/json
+  default-produces-media-type: application/json # response media type, default: */*
+  api-docs:
+    enabled: true
+    path: /${project.meta.service}/api-docs # default: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /${project.meta.service}/swagger # default: /swagger-ui.html
+    operations-sorter: alpha # 컨트롤러에서 정의한 api 메서드 순서, alpha(알파벳 오름차순), method(http method 순)
+    tags-sorter: alpha # 태그 정렬 기준
+    disable-swagger-default-url: false # disable the swagger-ui default petstore url
+    doc-expansion: none
+  
+alpha:
+  agent:
+    appMeta: ${project.meta.basePathPrefix}data/meta/
+    appBase: ${project.meta.basePathPrefix}package
+    appPrefix: alpha-batch
+  scheduler: 
+    enabled: true
+    poolSize: 10
+    threadNamePrefix: alpha-task-
+    worknoteDirectory: ${project.meta.basePathPrefix}data/scheduler/agentwork
+    optimize:
+      enabled: true
+      cron: "0 0 0 * * ?" #매일 00시 00분 00초
+      #cron: "0/10 * * * * *" #10초마다
+  messageSource:
+    baseNames:
+    - classpath:message/message-biz
+
+---
+##############################################################################################################
+# prod
+##############################################################################################################
+server:
+  port: 8099
+spring:
+  config.activate.on-profile: prod  
+
+---
+##############################################################################################################
+# dev
+##############################################################################################################
+server:
+  port: 8099
+spring:
+  config.activate.on-profile: dev 
+
+---
+##############################################################################################################
+# local
+##############################################################################################################
+server:
+  port: 8099
+spring:
+  config.activate.on-profile: local
+
+##############################################################################################################

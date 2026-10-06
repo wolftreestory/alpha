@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.base.support.batch.mapper.TaskExecutionMapper">
+
+    <resultMap id="resultMap" type="java.util.Map">
+    
+        <result property="executionNo" column="EXECUTION_NO"/> <!-- 수행번호 -->        
+        
+        <result property="executionName" column="EXECUTION_NAME"/> <!-- 수행이름 -->       
+        <result property="executionConfig" column="EXECUTION_CONFIG"/> <!-- 수행설정 -->
+                
+        <result property="executionStartTime" column="EXECUTION_START_TIME"/> <!-- 수행시작일시 -->
+        <result property="executionStartTimeFormat" column="EXECUTION_START_TIME_FORMAT"/> <!-- 수행시작일시포멧 -->
+        
+        <result property="executionEndTime" column="EXECUTION_END_TIME"/> <!-- 수행종료일시 -->
+        <result property="executionEndTimeFormat" column="EXECUTION_END_TIME_FORMAT"/> <!-- 수행종료일시포멧 -->
+        
+        <result property="executionServer" column="EXECUTION_SERVER"/> <!-- 수행서버 -->        
+        <result property="executionTime" column="EXECUTION_TIME"/> <!-- 수행시간 -->
+        <result property="executionTimeFlow" column="EXECUTION_TIME_FLOW"/> <!-- 수행시간흐름 -->
+        
+        <result property="executionLog" column="EXECUTION_LOG"/> <!-- 수행로그 -->        
+        <result property="executionLogSize" column="EXECUTION_LOG_SIZE"/> <!-- 수행로그크기 -->
+        
+        <result property="exceptionType" column="EXCEPTION_TYPE"/> <!-- 예외구분 -->        
+        <result property="exceptionYn" column="EXCEPTION_YN"/> <!-- 예외여부 -->        
+        <result property="exceptionLog" column="EXCEPTION_LOG"/> <!-- 예외로그 -->
+        <result property="exceptionLogSize" column="EXCEPTION_LOG_SIZE"/> <!-- 예외로그크기 -->        
+
+        <result property="executionPostProcess" column="EXECUTION_POST_PROCESS"/> <!-- 후처리정보 -->     
+
+        <result property="logType" column="LOG_TYPE"/>
+        <result property="logSeq" column="LOG_SEQ"/>
+        <result property="logData" column="LOG_DATA"/>
+        <result property="logExtractMode" column="LOG_EXTRACT_MODE"/>
+        <result property="logChunkStartPosition" column="LOG_CHUNK_START_POSITION"/>
+        <result property="logChunkSize" column="LOG_CHUNK_SIZE"/>
+
+        <result property="sysCreationDate" column="SYS_CREATION_DATE"/> <!-- 생성일 -->
+        <result property="sysUpdateDate" column="SYS_UPDATE_DATE"/> <!-- 수정일 -->
+
+    </resultMap>
+    
+	<select id="selectTaskExecutionNo" resultType="java.lang.String">
+	/*taskExecutionMapper.selectTaskExecutionNo */
+	SELECT GET_SEQ('SQ_TB_TASK_EXECUTION_HISTORY') FROM DUAL
+	</select>
+
+	<select id="selectTaskExecutionList" resultMap="resultMap" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskExecutionMapper.selectTaskExecutionList*/
+	<trim>
+	<if test="(selectMode==null or selectMode.equals('') or selectMode.equals('load'))">
+	SELECT 
+		A.EXECUTION_NO AS EXECUTION_NO /*수행번호*/
+		,A.EXECUTION_NAME AS EXECUTION_NAME /*수행이름*/
+		,A.EXECUTION_CONFIG AS EXECUTION_CONFIG /*수행설정*/
+		,A.EXECUTION_POST_PROCESS AS EXECUTION_POST_PROCESS /*수행후처리정보*/
+		,A.EXECUTION_START_TIME AS EXECUTION_START_TIME /*수행시작일시*/
+		,CONCAT(DATE_FORMAT(LEFT(A.EXECUTION_START_TIME,14),'%Y.%m.%d %H:%i:%s'),' ',RIGHT(A.EXECUTION_START_TIME,3)) AS EXECUTION_START_TIME_FORMAT /*수행시작일시포멧*/
+		,A.EXECUTION_END_TIME AS EXECUTION_END_TIME /*수행종료일시*/
+		,CONCAT(DATE_FORMAT(LEFT(A.EXECUTION_END_TIME,14),'%Y.%m.%d %H:%i:%s'),' ',RIGHT(A.EXECUTION_END_TIME,3)) AS EXECUTION_END_TIME_FORMAT /*수행종료일시포멧*/
+		,A.EXECUTION_SERVER AS EXECUTION_SERVER /*수행서버*/
+		,A.EXECUTION_TIME AS EXECUTION_TIME /*수행시간*/
+		,IFNULL(A.EXECUTION_TIME,ROUND(TIMESTAMPDIFF(MICROSECOND,STR_TO_DATE(A.EXECUTION_START_TIME,'%Y%m%d%H%i%s%f'),NOW(6))/1000,0)) AS EXECUTION_TIME_FLOW /*수행시간흐름*/
+		,@executionLogSize:=IFNULL(B.EXECUTION_LOG_SIZE,0) AS EXECUTION_LOG_SIZE /*수행로그크기*/
+		,IF(@executionLogSize=0,NULL,'*') AS EXECUTION_LOG /*수행로그*/
+		,@exceptionLogSize:=IFNULL(B.EXCEPTION_LOG_SIZE,0) AS EXCEPTION_LOG_SIZE /*예외로그크기*/
+		,IF(@exceptionLogSize=0,NULL,'*') AS EXCEPTION_LOG /*예외로그*/
+		,A.EXCEPTION_TYPE AS EXCEPTION_TYPE /*예외구분*/
+		,A.EXCEPTION_YN AS EXCEPTION_YN	/*예외여부*/
+		,UNIX_TIMESTAMP(SYS_CREATION_DATE)*1000 AS SYS_CREATION_DATE /*생성일*/
+		,UNIX_TIMESTAMP(SYS_UPDATE_DATE)*1000 AS SYS_UPDATE_DATE /*수정일*/
+	FROM 
+		(
+		SELECT * FROM TB_TASK_EXECUTION_HISTORY		
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		<if test="selectMode.equals('') and (executionNo==null or executionNo.equals('')) and (executionName==null or executionName.equals(''))"><![CDATA[AND 1!=1]]></if>
+		<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+		<if test="executionName!=null and !executionName.equals('')"><![CDATA[AND EXECUTION_NAME=#{executionName}]]></if>		
+		<if test="exceptionYn!=null and exceptionYn.equalsIgnoreCase('Y')"><![CDATA[AND EXCEPTION_YN=#{exceptionYn}]]></if>			
+		<if test="(errorYn!=null and errorYn.equalsIgnoreCase('Y')) or (interruptYn!=null and interruptYn.equalsIgnoreCase('Y'))">
+			<trim prefix="AND (" prefixOverrides="OR" suffix=")">
+			<if test="errorYn!=null and errorYn.equalsIgnoreCase('Y')"><![CDATA[OR EXCEPTION_TYPE='error']]></if>
+			<if test="interruptYn!=null and interruptYn.equalsIgnoreCase('Y')"><![CDATA[OR EXCEPTION_TYPE='interrupt']]></if>
+			</trim>
+		</if>					
+		</trim>		
+		ORDER BY EXECUTION_NO DESC
+		<if test="rownum>0"><![CDATA[LIMIT #{rownum}]]></if>
+		) A
+		LEFT JOIN 
+		(
+		SELECT A.EXECUTION_NO,A.EXECUTION_LOG_SIZE,B.EXCEPTION_LOG_SIZE
+		FROM
+			(
+			SELECT EXECUTION_NO,IFNULL(SUM(LENGTH(LOG_DATA)),0) AS EXECUTION_LOG_SIZE FROM TB_TASK_EXECUTION_LOG WHERE LOG_TYPE='executionLog'
+			<trim>
+			<if test="selectMode.equals('') and (executionNo==null or executionNo.equals('')) and (executionName==null or executionName.equals(''))"><![CDATA[AND 1!=1]]></if>
+			<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+			<if test="executionName!=null and !executionName.equals('')"><![CDATA[AND EXECUTION_NAME=#{executionName}]]></if>
+			</trim>
+			GROUP BY EXECUTION_NO,EXECUTION_NAME
+			) A LEFT JOIN(
+			SELECT EXECUTION_NO,IFNULL(SUM(LENGTH(LOG_DATA)),0) AS EXCEPTION_LOG_SIZE FROM TB_TASK_EXECUTION_LOG WHERE LOG_TYPE='exceptionLog'
+			<trim>
+			<if test="selectMode.equals('') and (executionNo==null or executionNo.equals('')) and (executionName==null or executionName.equals(''))"><![CDATA[AND 1!=1]]></if>
+			<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+			<if test="executionName!=null and !executionName.equals('')"><![CDATA[AND EXECUTION_NAME=#{executionName}]]></if>
+			</trim>
+			GROUP BY EXECUTION_NO,EXECUTION_NAME
+			) B ON A.EXECUTION_NO=B.EXECUTION_NO
+		) B
+		ON A.EXECUTION_NO=B.EXECUTION_NO
+	</if>
+	<if test="(selectMode!=null and selectMode.equals('delete'))">
+	SELECT * FROM TB_TASK_EXECUTION_HISTORY <include refid="deleteCommonCond"/>
+	</if>
+	</trim>
+	</select>
+	
+	<update id="insertTaskExecutionInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	<![CDATA[
+	/*taskExecutionMapper.insertTaskExecutionInfo*/
+	INSERT INTO TB_TASK_EXECUTION_HISTORY (
+		EXECUTION_NO /*수행번호*/
+		,EXECUTION_NAME /*수행이름*/
+		,EXECUTION_CONFIG /*수행설정*/
+		,EXECUTION_START_TIME /*수행시작일시*/
+		,EXECUTION_END_TIME /*수행종료일시*/
+		,EXECUTION_SERVER /*수행서버*/			
+		,EXECUTION_TIME /*수행시간*/
+		,EXCEPTION_TYPE /*예외구분*/
+		,EXCEPTION_YN /*예외여부*/
+		,EXECUTION_POST_PROCESS /*후처리정보*/
+		,SYS_CREATION_DATE /*생성일*/
+	) VALUES (
+		CAST(#{executionNo,jdbcType=VARCHAR} AS UNSIGNED)
+		,#{executionName,jdbcType=VARCHAR}
+		,#{executionConfig,jdbcType=VARCHAR}
+		,#{executionStartTime,jdbcType=VARCHAR}
+		,#{executionEndTime,jdbcType=VARCHAR}
+		,#{executionServer,jdbcType=VARCHAR}
+		,#{executionTime,jdbcType=VARCHAR}
+		,#{exceptionType,jdbcType=VARCHAR}
+		,#{exceptionYn,jdbcType=VARCHAR}
+		,#{executionPostProcess,jdbcType=VARCHAR}
+		,NOW(3)
+	)
+	]]>
+	</update>
+
+	<update id="updateTaskExecutionInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskExecutionMapper.updateTaskExecutionInfo*/    
+	UPDATE TB_TASK_EXECUTION_HISTORY
+	<trim prefix="SET" suffixOverrides=",">
+	<if test="executionName!=null and !executionName.equals('')"><![CDATA[EXECUTION_NAME=#{executionName}/*수행이름*/,]]></if>
+	<if test="executionConfig!=null and !executionConfig.equals('')"><![CDATA[EXECUTION_CONFIG=#{executionConfig}/*수행설정*/,]]></if>
+	<if test="executionStartTime!=null and !executionStartTime.equals('')"><![CDATA[EXECUTION_START_TIME=#{executionStartTime}/*수행시작일시*/,]]></if>
+	<if test="executionEndTime!=null and !executionEndTime.equals('')"><![CDATA[EXECUTION_END_TIME=#{executionEndTime}/*수행종료일시*/,]]></if>
+	<if test="executionServer!=null and !executionServer.equals('')"><![CDATA[EXECUTION_SERVER=#{executionServer}/*수행서버*/,]]></if>
+	<if test="executionTime!=null and !executionTime.equals('')"><![CDATA[EXECUTION_TIME=#{executionTime}/*수행시간*/,]]></if>		
+	<if test="executionPostProcess!=null and !executionPostProcess.equals('')"><![CDATA[EXECUTION_POST_PROCESS=#{executionPostProcess}/*후처리정보*/,]]></if>		
+	<if test="exceptionType!=null and !exceptionType.equals('')"><![CDATA[EXCEPTION_TYPE=#{exceptionType}/*예외구분*/,]]></if>		
+	<if test="exceptionYn!=null and !exceptionYn.equals('')"><![CDATA[EXCEPTION_YN=#{exceptionYn}/*예외여부*/,]]></if>		
+	SYS_UPDATE_DATE=NOW(3),
+	</trim>
+	WHERE EXECUTION_NO=#{executionNo}
+	</update>
+
+	<update id="deleteTaskExecutionInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskExecutionMapper.deleteTaskExecutionInfo*/
+	DELETE FROM TB_TASK_EXECUTION_HISTORY <include refid="deleteCommonCond"/>
+	</update>
+
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+	<select id="selectTaskLogList" resultMap="resultMap" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskExecutionMapper.selectTaskLogList*/
+	<trim>
+	<if test="logExtractMode!=null and logExtractMode.equals('block')">
+	SELECT
+		EXECUTION_NO AS EXECUTION_NO
+		,EXECUTION_NAME AS EXECUTION_NAME
+		,LOG_SEQ AS LOG_SEQ
+		,LOG_TYPE AS LOG_TYPE
+		,LOG_DATA AS LOG_DATA
+	FROM TB_TASK_EXECUTION_LOG
+	<trim prefix="WHERE" prefixOverrides="AND|OR">
+	<if test="executionNo==null or executionNo.equals('')"><![CDATA[AND 1!=1]]></if>
+	<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+	<if test="logType!=null and !logType.equals('')"><![CDATA[AND LOG_TYPE=#{logType}]]></if>			
+	<if test="logSeq!=null and !logSeq.equals('')"><![CDATA[AND LOG_SEQ=#{logSeq}]]></if>
+	</trim>
+	</if>
+	<if test="logExtractMode!=null and logExtractMode.equals('chunk')">
+	SELECT
+		B.EXECUTION_NO AS EXECUTION_NO
+		,B.EXECUTION_NAME AS EXECUTION_NAME
+		,B.LOG_SEQ AS LOG_SEQ
+		,B.LOG_TYPE AS LOG_TYPE
+		,SUBSTRING(B.LOG_DATA,A.EXTRACT_POSITION,A.EXTRACT_SIZE) AS LOG_DATA
+	FROM
+		(
+		SELECT 
+			<trim><![CDATA[
+			A.EXECUTION_NO
+			,A.LOG_SEQ
+			,A.LOG_START_POSITION
+			,A.LOG_DATA_SIZE
+			,A.LOG_END_POSITION			
+			,@logChunkStartPosition:=#{logChunkStartPosition,jdbcType=NUMERIC} AS LOG_CHUNK_START_POSITION
+			,@logChunkSize:=#{logChunkSize,jdbcType=NUMERIC} AS LOG_CHUNK_SIZE			
+			,@chunkEndPosition:=(@logChunkStartPosition+@logChunkSize-1) AS CHUNK_END_POSITION						
+			,@extractYn:=IF(IF(A.LOG_START_POSITION<=@chunkEndPosition,1,0)+IF(A.LOG_END_POSITION>=@logChunkStartPosition,1,0)<2,'N','Y') AS EXTRACT_YN
+			,@extractPosition:=CASE 
+				WHEN @extractYn='Y' AND A.LOG_START_POSITION<=@logChunkStartPosition AND A.LOG_END_POSITION>=@logChunkStartPosition THEN (@logChunkStartPosition-A.LOG_START_POSITION)+1
+				WHEN @extractYn='Y' AND A.LOG_START_POSITION<=@chunkEndPosition AND A.LOG_END_POSITION>=@chunkEndPosition THEN 1
+				WHEN @extractYn='Y' THEN 1
+				ELSE NULL END AS EXTRACT_POSITION				
+			,@extractSize:=CASE 
+				WHEN @extractYn='Y' AND A.LOG_START_POSITION<=@logChunkStartPosition AND A.LOG_END_POSITION>=@logChunkStartPosition THEN IF(A.LOG_DATA_SIZE<@logChunkSize,A.LOG_DATA_SIZE-@extractPosition,@logChunkSize)  
+				WHEN @extractYn='Y' AND A.LOG_START_POSITION<=@chunkEndPosition AND A.LOG_END_POSITION>=@chunkEndPosition THEN (@chunkEndPosition-A.LOG_START_POSITION)+1
+				WHEN @extractYn='Y' THEN A.LOG_DATA_SIZE
+				ELSE NULL END AS EXTRACT_SIZE
+			]]></trim>
+		FROM
+			(
+			SELECT
+				EXECUTION_NO AS EXECUTION_NO
+				,IF(LOG_SEQ=1,(@logSum:=0)+1,LOG_SEQ) AS LOG_SEQ
+				,IF(@logSum=0,1,@logSum+1) AS LOG_START_POSITION
+				,@executionLogSize:=LENGTH(LOG_DATA) AS LOG_DATA_SIZE
+				,@logSum:=(@logSum+@executionLogSize) AS LOG_END_POSITION
+			FROM TB_TASK_EXECUTION_LOG 
+			<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="executionNo==null or executionNo.equals('')"><![CDATA[AND 1!=1]]></if>			
+			<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+			<if test="logType!=null and !logType.equals('')"><![CDATA[AND LOG_TYPE=#{logType}]]></if>
+			</trim>
+			) A
+		) A 
+		,(
+		SELECT 
+			EXECUTION_NO AS EXECUTION_NO
+			,EXECUTION_NAME AS EXECUTION_NAME
+			,LOG_SEQ AS LOG_SEQ
+			,LOG_TYPE AS LOG_TYPE
+			,LOG_DATA AS LOG_DATA
+		FROM TB_TASK_EXECUTION_LOG
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		<if test="executionNo==null or executionNo.equals('')"><![CDATA[AND 1!=1]]></if>
+		<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+		<if test="logType!=null and !logType.equals('')"><![CDATA[AND LOG_TYPE=#{logType}]]></if>
+		</trim>
+		) B
+	WHERE 1=1
+	AND A.EXTRACT_YN='Y'
+	AND A.EXECUTION_NO=B.EXECUTION_NO
+	AND A.LOG_SEQ=B.LOG_SEQ	
+	</if>
+	</trim>
+	</select>
+	
+	<update id="insertTaskExecutionLogInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	<![CDATA[
+	/*taskExecutionMapper.insertTaskExecutionLogInfo*/
+	INSERT INTO TB_TASK_EXECUTION_LOG (
+		EXECUTION_NO /*TASK번호*/
+		,EXECUTION_NAME /*수행이름*/
+		,LOG_TYPE /*log구분*/
+		,LOG_SEQ /*log순차*/
+		,LOG_DATA /*log데이타*/	
+		,SYS_CREATION_DATE /*생성일*/
+	) VALUES (
+		#{executionNo,jdbcType=VARCHAR}
+		,#{executionName,jdbcType=VARCHAR}
+		,#{logType,jdbcType=VARCHAR}
+		,(SELECT IFNULL(MAX(A.LOG_SEQ),0)+1 FROM (SELECT EXECUTION_NO,LOG_SEQ FROM TB_TASK_EXECUTION_LOG WHERE EXECUTION_NO=#{executionNo,jdbcType=NUMERIC} AND LOG_TYPE=#{logType,jdbcType=VARCHAR}) A)
+		,#{logData,jdbcType=BLOB}
+		,NOW(3)
+	)
+	]]>
+	</update>
+		
+	<update id="deleteTaskExecutionLogInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskExecutionMapper.deleteTaskExecutionLogInfo*/
+	DELETE FROM TB_TASK_EXECUTION_LOG <include refid="deleteCommonCond"/>
+	</update>
+	
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	
+	<sql id="deleteCommonCond">
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+		<if test="executionNo!=null and !executionNo.equals('')"><![CDATA[AND EXECUTION_NO=#{executionNo}]]></if>
+		<if test="executionName!=null and !executionName.equals('')"><![CDATA[AND EXECUTION_NAME=#{executionName}/*수행이름*/]]></if>		
+		<if test="(executionNo==null or executionNo.equals('')) and (deleteAllYn==null or deleteAllYn.equals('N'))">
+		<trim prefix="AND (" prefixOverrides="OR" suffix=")">
+		<if test="(clearBaseDays==null or clearBaseDays.equals('')) and (clearBaseDays==null or clearBaseDays.equals(''))"><![CDATA[OR 1!=1]]></if>
+		<if test="clearBaseDays!=null and !clearBaseDays.equals('')"><![CDATA[OR DATEDIFF(NOW(3),SYS_CREATION_DATE)>CAST(#{clearBaseDays} AS UNSIGNED)]]></if>
+		<if test="clearBaseRows!=null and !clearBaseRows.equals('')"><![CDATA[OR EXECUTION_NO<(SELECT MIN(A.EXECUTION_NO)]]> FROM (SELECT EXECUTION_NO FROM TB_TASK_EXECUTION_HISTORY
+			<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="executionName!=null and !executionName.equals('')"><![CDATA[AND EXECUTION_NAME=#{executionName}/*수행이름*/]]></if>
+			</trim>
+			ORDER BY EXECUTION_NO  DESC LIMIT ${clearBaseRows})A)
+		</if>
+		</trim>
+		</if>
+		</trim>
+	</sql>
+	
+	<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+		
+</mapper>
+

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "수행타스크1(cron)",
+    "description": "더미",
+    "triggerType": "cron",
+    "triggerValue": "10 0/5 * * * *",
+    "triggerStartDate": "20240725090000",
+    "triggerEndDate":   "20240731235959",
+    "executeRequest": {
+      "jobName": "dummyJob"
+    }
+  },  
+  {
+    "name": "수행타스크2(fixedRate)",
+    "description": "암호화처리한 파일을 업로드하는 예제",
+    "triggerType": "fixedRate",
+    "triggerValue": "30000",
+    "triggerStartDate": "20240725090000",
+    "triggerEndDate":   "20240731235959",
+    "executeRequest": {
+      "jobName": "sample1Job",
+      "jobParameters": {"multiple": 1}
+    }
+  },
+  {
+    "name": "수행타스크3(fixedDelay)",
+    "description": "파일을 다운로드 하여 DB처리 후 SFTP전송하는 예제",
+    "triggerType": "fixedDelay",
+    "triggerValue": "60000",
+    "triggerStartDate": "20240725090000",
+    "triggerEndDate":   "20240731235959",
+    "executeRequest": {
+      "jobName": "sample2Job"
+    }
+  },  
+  {
+    "name": "수행타스크4(fixedTime)-jobParametersApiUrl,callbackApiUrl",
+    "description": "암호화처리한 파일을 업로드하는 예제",
+    "triggerType": "fixedTime",
+    "triggerValue": "20240805110000",
+    "triggerStartDate": "20240725180000",
+    "triggerEndDate":   "20240731235959",
+    "executeRequest": {
+      "jobName": "sample1Job",
+      "jobParametersApiUrl": "http://dev.apollo.co.kr/xtra/batch/v1/dynamicParam/sample1Job/1",
+      "callbackApiUrl": "http://dev.apollo.co.kr/xtra/batch/v1/callback/sample1Job"    
+     }
+  }  
+]
+
+
+/app/package/alpha-batch-sample1Job/alpha-batch-sample1Job.execute.sh "-c" "-p" "{\"jvm\":\"--spring.batch.job.domainScope=xxx,yyy\",\"p1\":\"홍길동\",\"p2\":\"123456789\",\"params\":{\"executeHost\":\"apollo\",\"executeDate\":\"20240731112446\",\"executeUser\":\"blue\"}}"

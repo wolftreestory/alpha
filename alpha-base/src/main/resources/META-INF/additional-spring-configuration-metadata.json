@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "jasypt.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'jasypt.enabled'"
+  },
+  {
+    "name": "spring.redis.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.redis.enabled'"
+  },
+  {
+    "name": "spring.redis.cluster.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.redis.cluster.enabled'"
+  },
+  {
+    "name": "spring.redis.cluster.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.redis.cluster.password'"
+  }
+]}

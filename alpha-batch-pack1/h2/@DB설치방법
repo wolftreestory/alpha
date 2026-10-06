@@ -1,0 +1,47 @@
+-------------------------------------------------------------------------------------------------------------------------
+* h2 db를 file 참조로 접속할 경우 멀티쓰레드를 지원하지 않는다. 
+* 따라서 여러 프로그램이 같이 사용할 수 없고, 한번에 하나의 프로그램만 접속 할 수 있다. (h2 db를 사용하여 batch프로그램 수행시, 이 db에 DB접속 툴로 접속 불가
+* h2 db를 tcp로 접속시에는 멀티쓰레드 가능.
+-------------------------------------------------------------------------------------------------------------------------
+- 로컬환경에서 수행시 h2에서 생성한 db파일을 /azure.data/h2/ 폴더에 복사한다.
+	board.mv.db -> /azure.data/h2/board.mv.db
+	score.mv.db -> /azure.data/h2/score.mv.db
+	
+	application.yml의 해당 h2 DB파일의 경로를 수정한다.
+	---------------------------------------------------------------------
+	  board: 
+	    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+	    jdbc-url: jdbc:log4jdbc:h2:file:/azure.data/h2/board
+	    username: sa
+	    password:
+	  score:
+	    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+	    jdbc-url: jdbc:log4jdbc:h2:file:/azure.data/h2/score
+	    username: sa
+	    password:  
+	---------------------------------------------------------------------
+		
+- 로컬환경 db툴에서 접속시 h2 db를 생성시 사용한 드라이버와 동일한 드라이버를 설치한다.
+    driver/h2-2.2.224.jar 를 DB 접속 프로그램의 H2 접속 드라이버로 설치한다.
+    
+- 로컬환경 db 초기화
+	-- board.mv.db 를 접속하여 테이블 초기화
+	DROP TABLE IF EXISTS TB_BOARD;
+	CREATE TABLE TB_BOARD (
+	  IDX INT AUTO_INCREMENT PRIMARY KEY
+	  ,TITLE VARCHAR(250) NOT NULL
+	  ,CONTENT VARCHAR(1000) NOT NULL
+	  ,REG_NAME VARCHAR(250) NOT NULL
+	  ,REG_DATE DATE NOT NULL
+	  ,MOD_DATE DATE NULL
+	);
+	
+	-- score.mv.db 를 접속하여 테이블 초기화
+	DROP TABLE IF EXISTS TB_SCORE;
+	CREATE TABLE TB_SCORE (
+	  IDX INT AUTO_INCREMENT PRIMARY KEY
+	  ,NAME VARCHAR(250) NOT NULL
+	  ,SCORE NUMERIC(20, 2) NOT NULL
+	);
+
+    

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="com.alpha.batch.domain.sample.score.mapper.ScoreMapper">
+
+    <select id="select" resultType="com.alpha.batch.domain.sample.score.vo.ScoreVo">
+    	SELECT IDX AS no, name, score FROM TB_SCORE WHERE <![CDATA[name LIKE '%'||#{name}||'%']]>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="no">
+		INSERT INTO TB_SCORE (NAME,SCORE) VALUES (#{name, jdbcType=VARCHAR},#{score, jdbcType=BIGINT})    		
+    </insert>
+
+    <update id="update">
+		UPDATE TB_SCORE SET NAME = #{name, jdbcType=VARCHAR},SCORE = #{score, jdbcType=BIGINT} WHERE IDX = #{no}
+    </update>
+
+    <delete id="delete">
+		DELETE FROM TB_SCORE WHERE IDX = #{no}
+    </delete>
+
+    <delete id="deleteAll">
+		DELETE FROM TB_SCORE
+    </delete>
+    
+</mapper>

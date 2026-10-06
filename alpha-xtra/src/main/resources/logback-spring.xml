@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<!-- level : ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF --> 
+<!-- 
+	ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
+		- 시간과 용량을 기준으로 로그파일을 생성
+		- fileNamePattern: 로그가 생성되는 로그파일의 이름 패턴을 설정
+		- cleanHistoryOnStart: true 일 경우 어플리케이션을 시작할 때 기존 아카이빙된 로그 파일들을 삭제
+		- maxFileSize: 한 로그파일의 최대 사이즈 설정
+		- totalSizeCap: 압축한 로그파일의 최대 사이즈를 설정 (기본값인 0일 때는 최대 용량을 설정하지 않음, 100MB등 용량을 명시할 경우 압축된 로그 파일 용량의 합이 해당 용량을 초과할 때 오래된 로그부터 삭제)
+		- maxHistory: 압축한 로그파일의 최대 보관 기간 단위를 설정 (기본값인 7일 경우 fileNamePattern에서 정한 rollover 단위가 일이라면 7일 전까지의 로그가 보관, 0일 경우 최대 기간 설정하지 않음)
+		- application.yaml에 설정시 대응
+			fileNamePattern: 		logging.logback.rollingpolicy.file-name-pattern
+			cleanHistoryOnStart: 	logging.logback.rollingpolicy.clean-history-on-start
+			maxFileSize: 			logging.logback.rollingpolicy.max-max-file-size
+			totalSizeCap: 			logging.logback.rollingpolicy.total-size-cap
+			maxHistory: 			logging.logback.rollingpolicy.max-history
+
+ -->
+<configuration scan="true" scanPeriod="60 seconds">
+
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+	        <charset>UTF-8</charset>
+	        <!-- <pattern>${CONSOLE_LOG_PATTERN}</pattern>	-->
+         	<pattern>[%clr(%d{HH:mm:ss.SSS}){faint}][%clr(${LOG_LEVEL_PATTERN:-%5p})][%clr(%thread){faint}][%clr(%40logger{40}){cyan}][%clr(%3.3line){green}] %clr(:){faint} %m%n</pattern>
+			<!-- <pattern>[%d{HH:mm:ss.SSS}][%thread][%-5level][%logger{100}][%method:%line] %msg%n</pattern> -->
+            <!-- <pattern>[%d{HH:mm:ss.SSS} %5level %-20.20thread %-30.30class %-25.25method:%-3.3line] %msg%n</pattern> -->
+	        <!-- 
+		        %logger{0} : 패키지를 제외하고 해당 클래스 명만 기록
+		        %logger{n} : n 자리 이하까지 패키지를 포함하여 기록 
+		        %40logger{40} : 로그 출력 고정40(left-padding), 40자리 이하까지 패키지 포함하여 기록
+			-->            
+        </encoder>
+    </appender>
+
+	<appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<!-- <pattern>${FILE_LOG_PATTERN}</pattern>  -->
+			<pattern>[%d{ISO8601}] [%5level] [%thread] [%class] [%method:%line] %msg%n</pattern>
+		</encoder>
+		<file>${LOG_FILE}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz}</fileNamePattern>
+			<cleanHistoryOnStart>${LOGBACK_ROLLINGPOLICY_CLEAN_HISTORY_ON_START:-false}</cleanHistoryOnStart>
+			<maxFileSize>${LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE:-10MB}</maxFileSize>
+			<totalSizeCap>${LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP:-0}</totalSizeCap>
+			<maxHistory>${LOGBACK_ROLLINGPOLICY_MAX_HISTORY:-7}</maxHistory>
+		</rollingPolicy>
+	</appender>
+	
+	<appender name="sqlRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>	
+			<charset>UTF-8</charset>              	 
+			<pattern>[%d{ISO8601}] %msg%n</pattern>
+		</encoder>
+   		<file>${LOG_FILE}.sql.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.sql.%d{yyyy-MM-dd}.%i.gz}</fileNamePattern>
+			<cleanHistoryOnStart>${LOGBACK_ROLLINGPOLICY_CLEAN_HISTORY_ON_START:-false}</cleanHistoryOnStart>
+			<maxFileSize>${LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE:-10MB}</maxFileSize>
+			<totalSizeCap>${LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP:-0}</totalSizeCap>
+			<maxHistory>${LOGBACK_ROLLINGPOLICY_MAX_HISTORY:-7}</maxHistory>
+		</rollingPolicy>
+	</appender>
+    
+    <root level="DEBUG">
+		<appender-ref ref="consoleAppender" />
+        <appender-ref ref="rollingFileAppender" />
+    </root>
+	
+	<logger name="org.springframework" additivity="true" level="error" />
+	<logger name="_org.springframework" additivity="true" level="error" />	
+
+	<logger name="io" additivity="true" level="error" />	
+	<logger name="org" additivity="true" level="error" />	
+	<logger name="log4jdbc" additivity="true" level="error" />	
+	<logger name="reactor" additivity="true" level="error" />	
+	<logger name="springfox" additivity="true" level="error" />	
+
+	<logger name="com.zaxxer.hikari" additivity="true" level="error" />	
+	<logger name="com.ulisesbocchio" additivity="true" level="error" />	
+
+	<!-- 
+	** log4jdbc SQL로그 ******************************************************************************
+	jdbc.connection: 열려있는 모든 번호와 연결 수립 및 해제 이벤트를 기록
+	jdbc.audit: ResultSet을 제외한 모든 JDBC 호출 정보
+	jdbc.resultset: ResultSet을 포함한 모든 JDBC 호출 정보
+	jdbc.sqlonly: SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문
+	jdbc.sqltiming : SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보
+	jdbc.resultsettable: SQL 결과 조회된 데이터
+	************************************************************************************************
+	-->
+	<logger name="jdbc.connection" additivity="false"/>
+	<logger name="jdbc.audit" additivity="false"/>
+	<logger name="jdbc.resultset" additivity="false"/>
+	<logger name="jdbc.sqlonly" additivity="false"/>
+	<logger name="jdbc.sqltiming" additivity="true">
+		<appender-ref ref="sqlRollingFileAppender" />
+	</logger>
+	<logger name="jdbc.resultsettable" additivity="true">
+		<appender-ref ref="sqlRollingFileAppender" />
+	</logger>
+	
+</configuration>

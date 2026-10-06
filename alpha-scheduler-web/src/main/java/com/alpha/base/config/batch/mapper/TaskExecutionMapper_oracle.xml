@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.base.support.batch.mapper.TaskExecutionMapper">
+
+    <resultMap id="resultMap" type="java.util.HashMap">    
+        <result property="executionNo" column="EXECUTION_NO"/> <!-- 수행번호 -->
+        <result property="executionName" column="EXECUTION_NAME"/> <!-- 수행타스크이름 -->
+        <result property="executionStartTime" column="EXECUTION_START_TIME"/> <!-- 수행시작일시 -->
+        <result property="executionStartTimeFormat" column="EXECUTION_START_TIME_FORMAT"/> <!-- 수행시작일시포멧 -->
+        <result property="executionEndTime" column="EXECUTION_END_TIME"/> <!-- 수행종료일시 -->
+        <result property="executionEndTimeFormat" column="EXECUTION_END_TIME_FORMAT"/> <!-- 수행종료일시포멧 -->
+        <result property="executionServer" column="EXECUTION_SERVER"/> <!-- 수행서버 -->        
+        <result property="executionTime" column="EXECUTION_TIME"/> <!-- 수행시간 -->
+        <result property="executionTimeFlow" column="EXECUTION_TIME_FLOW"/> <!-- 수행시간흐름 -->
+        <result property="executionLog" column="EXECUTION_LOG"/> <!-- 수행로그 -->
+        <result property="executionLogSize" column="EXECUTION_LOG_SIZE"/> <!-- 수행로그크기 -->
+        <result property="exceptionLog" column="EXCEPTION_LOG"/> <!-- 예외로그 -->
+        <result property="exceptionLogSize" column="EXCEPTION_LOG_SIZE"/> <!-- 예외로그크기 -->
+        <result property="sysCreationDate" column="SYS_CREATION_DATE"/> <!-- 생성일 -->
+        <result property="sysUpdateDate" column="SYS_UPDATE_DATE"/> <!-- 수정일 -->
+    </resultMap>
+    
+	<select id="selectTaskExecutionNo" resultType="java.lang.String">
+	/*taskLogHandlerMapper.selectTaskExecutionNo */
+	SELECT SQ_TB_TASK_EXECUTION_HISTORY.NEXTVAL FROM DUAL
+	</select>
+    
+	<select id="selectTaskExecutionList" resultMap="resultMap" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskLogHandlerMapper.selectTaskExecutionList*/
+	SELECT * FROM (
+		SELECT
+			TASK_LOG_NO AS EXECUTION_NO /*TASK번호*/
+			,EXECUTION_NAME AS EXECUTION_NAME /*수행타스크이름*/
+			,EXECUTION_START_TIME AS EXECUTION_START_TIME /*수행시작일시*/
+			,TO_CHAR(TO_TIMESTAMP(EXECUTION_START_TIME,'YYYYMMDDHH24MISSFF'),'YYYY.MM.DD HH24:MI:SS FF3') AS EXECUTION_START_TIME_FORMAT /*수행시작일시포멧*/
+			,EXECUTION_END_TIME AS EXECUTION_END_TIME /*수행종료일시*/
+			,TO_CHAR(TO_TIMESTAMP(EXECUTION_END_TIME,'YYYYMMDDHH24MISSFF'),'YYYY.MM.DD HH24:MI:SS FF3') AS EXECUTION_END_TIME_FORMAT /*수행종료일시포멧*/
+			,EXECUTION_SERVER AS EXECUTION_SERVER /*수행서버*/		
+			,EXECUTION_TIME AS EXECUTION_TIME /*수행시간*/
+			,NVL(EXECUTION_TIME,REPLACE(REPLACE(SUBSTR(SYSTIMESTAMP(3)-TO_TIMESTAMP(EXECUTION_START_TIME,'YYYYMMDDHH24MISSFF'),12,12),':',''),'.','')) AS EXECUTION_TIME_FLOW /*수행시간흐름*/
+			,EXECUTION_LOG AS EXECUTION_LOG /*수행로그*/
+			,NVL(DBMS_LOB.getlength(EXECUTION_LOG),0) AS EXECUTION_LOG_SIZE /*수행로그크기*/
+			,EXCEPTION_LOG AS EXCEPTION_LOG /*예외로그*/
+			,NVL(DBMS_LOB.getlength(EXCEPTION_LOG),0) AS EXCEPTION_LOG_SIZE /*예외로그크기*/
+			,SYS_CREATION_DATE AS SYS_CREATION_DATE /*생성일*/
+			,SYS_UPDATE_DATE AS SYS_UPDATE_DATE /*수정일*/
+		FROM TB_TASK_EXECUTION_HISTORY
+		WHERE TASK_LOG_NO IS NOT NULL
+		<if test="executionNo != null and executionNo != ''"><![CDATA[AND TASK_LOG_NO=#{executionNo}]]></if>
+		<if test="executionName != null and executionName != ''"><![CDATA[AND EXECUTION_NAME=#{executionName}]]></if>
+		<if test="exceptionYn != null and TaskExecutionExceptionYn.equalsIgnoreCase('Y')">AND EXCEPTION_LOG IS NOT NULL</if>		
+	    ORDER BY EXECUTION_NO DESC	
+	) WHERE 1=1
+	<if test="rownum != null and rownum != ''"><![CDATA[AND ROWNUM<=#{rownum}]]></if>	    
+	</select>
+
+	<update id="insertTaskExecutionInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	<![CDATA[
+	/*taskLogHandlerMapper.insertTaskExecutionInfo*/
+	INSERT INTO TB_TASK_EXECUTION_HISTORY (
+		TASK_LOG_NO /*TASK번호*/
+		,EXECUTION_NAME /*수행타스크이름*/
+		,EXECUTION_START_TIME /*수행시작일시*/
+		,EXECUTION_END_TIME /*수행종료일시*/
+		,EXECUTION_SERVER /*수행서버*/			
+		,EXECUTION_TIME /*수행시간*/
+		,EXECUTION_LOG /*수행로그*/		
+		,EXCEPTION_LOG /*예외로그*/
+		,SYS_CREATION_DATE /*생성일*/
+	) VALUES (
+		#{executionNo,jdbcType=VARCHAR}
+		,#{executionName,jdbcType=VARCHAR}
+		,#{executionStartTime,jdbcType=VARCHAR}
+		,#{executionEndTime,jdbcType=VARCHAR}
+		,#{executionServer,jdbcType=VARCHAR}
+		,#{executionTime,jdbcType=VARCHAR}
+		,#{executionLog,jdbcType=CLOB}
+		,#{exceptionLog,jdbcType=CLOB}
+		,SYSDATE
+	)
+	]]>
+	</update>
+	
+	<update id="updateTaskExecutionInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskLogHandlerMapper.updateTaskExecutionInfo*/    
+	UPDATE TB_TASK_EXECUTION_HISTORY
+	<trim prefix="SET" suffixOverrides=",">
+		<if test="executionName != null and executionName != ''"><![CDATA[EXECUTION_NAME=#{executionName}/*수행타스크이름*/,]]></if>
+		<if test="executionStartTime != null and executionStartTime != ''"><![CDATA[EXECUTION_START_TIME=#{executionStartTime}/*수행시작일시*/,]]></if>
+		<if test="executionEndTime != null and executionEndTime != ''"><![CDATA[EXECUTION_END_TIME=#{executionEndTime}/*수행종료일시*/,]]></if>
+		<if test="executionServer != null and executionServer != ''"><![CDATA[EXECUTION_SERVER=#{executionServer}/*수행서버*/,]]></if>
+		<if test="executionTime != null and executionTime != ''"><![CDATA[EXECUTION_TIME=#{executionTime}/*수행시간*/,]]></if>
+		<if test="executionLog != null and executionLog != ''"><![CDATA[EXECUTION_LOG=#{executionLog,jdbcType=CLOB}/*수행로그*/,]]></if>
+		<if test="executionLogEmptyYn != null and executionLogEmptyYn.equalsIgnoreCase('Y')"><![CDATA[EXECUTION_LOG=EMPTY_CLOB()/*수행로그EMPTY*/,]]></if>
+		<if test="exceptionLog != null and TaskExecutionException != ''"><![CDATA[EXCEPTION_LOG=#{exceptionLog,jdbcType=CLOB}/*예외로그*/,]]></if>
+		<if test="exceptionLogEmptyYn != null and ExecutionExceptionEmptyYn.equalsIgnoreCase('Y')"><![CDATA[EXCEPTION_LOG=EMPTY_CLOB()/*예외로그EMPTY*/,]]></if>
+		SYS_UPDATE_DATE=SYSDATE,
+	</trim>
+	WHERE TASK_LOG_NO=#{executionNo,jdbcType=NUMERIC}
+	</update>
+
+	<update id="deleteTaskExecutionInfo" parameterType="com.alpha.base.support.batch.vo.TaskExecutionVo">
+	/*taskLogHandlerMapper.deleteTaskExecutionInfo*/
+	DELETE FROM TB_TASK_EXECUTION_HISTORY
+	WHERE 1=1
+	<if test="executionName != null and executionName != ''"><![CDATA[AND EXECUTION_NAME=#{executionName}/*수행타스크이름*/]]></if>
+	<if test="executionNo != null and executionNo != ''"><![CDATA[AND TASK_LOG_NO=#{executionNo}]]></if>
+	<if test="clearBaseDay != null and clearBaseDay != ''"><![CDATA[AND SYSDATE-SYS_CREATION_DATE>TO_NUMBER(#{clearBaseDay})]]></if>	
+	</update>
+	
+</mapper>
+

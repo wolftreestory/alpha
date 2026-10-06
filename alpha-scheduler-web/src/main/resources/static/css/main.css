@@ -1,0 +1,35 @@
+	.center {display:flex;justify-content:center;align-items:center;flex-direction:column;width:100%;text-align:center;}
+	
+	.titleInfo {text-align:center;}
+	.titleInfo p {width:1386px;text-align:left;padding:7px;color:#555555;font-family:verdana,sans-serif;font-size:17px;font-weight:bold;background:#f9f9f9;}	
+	.titleInfo table {width:1400px;font-family:verdana,sans-serif;border:none;border-collapse:collapse;}
+	.titleInfo td.filter {border-top:none;padding:3px;font-family:verdana,sans-serif;font-size:13px;text-align:left;height:21px;}
+	.titleInfo td.status {border-top:none;padding:3px;font-family:verdana,sans-serif;font-size:13px;text-align:right;height:21px;}
+	.titleInfo input.textType {width:148px;height:18px;border:none;border-radius:5px;padding-left:10px;padding-right:10px;font-family:verdana,sans-serif;font-size:14px;color:#555555;background-color:#efefef;vertical-align:middle;text-align:center;}
+	.titleInfo button.container {width:45px;height:18px;font-size:12px;text-align:center;vertical-align:middle;}
+	
+	.taskList table {width:1400px;font-family:verdana,sans-serif;border-collapse:collapse;}
+	.taskList th {border:1px solid #8899bb;text-align:left;padding:2px;color:#f0f0f0;font-size:15px;height:25px;background-color:#8899bb;}
+	.taskList td {border:1px solid #f0f0f0;text-align:center;padding:2px;color:#000000;font-size:14px;}
+	.taskList tr:nth-child(odd) {background-color:#f4f4f4;}
+
+	.taskDescription textarea {font-family:verdana,sans-serif;font-size:14px;color:#000000;width:260px;height:40px;background-color:transparent;border:1px;}
+
+	.taskListControl {text-align:center;}
+	.taskListControl table {width:1400px;font-family:verdana,sans-serif;border-collapse:collapse;}
+	.taskListControl td.pageSize {border-top:none;padding:3px;font-family:verdana,sans-serif;font-size:13px;text-align:left;height:21px;}
+	.taskListControl td.navigator {border-top:none;padding:3px;padding-right:6px;font-family:verdana,sans-serif;font-size:13px;text-align:right;height:21px;}
+	.taskListControl input.pageSize {width:50px;height:20px;border:none;border-radius:5px;padding-left:10px;padding-right:10px;font-family:verdana,sans-serif;font-size:11px;color:#555555;background-color:#efefef;vertical-align:middle;text-align:center;}
+	.taskListControl input.pageInfo {width:38px;height:20px;border:none;border-radius:5px;padding-left:10px;padding-right:10px;font-family:verdana,sans-serif;font-size:11px;color:#555555;background-color:#efefef;vertical-align:middle;text-align:center;}
+
+	.schedulerCommand {text-align:left;}
+	.schedulerCommand table {width:1400px;font-family:verdana,sans-serif;border-collapse:collapse;}
+	.schedulerCommand input {width:125px;font-size:14px;vertical-align:middle;}
+
+	.authKey table {width:1400px;border:none;border-collapse:collapse;}
+	.authKey td.key {border:none;padding:2px;color:#000000;font-family:consolas;font-size:12px;text-align:right;}
+	.authKey td.value {border:none;padding:2px;color:#000000;font-family:consolas;font-size:12px;text-align:left;}
+	.authKey span {font-family:consolas;font-size:12px;color:#000000;}
+	.authKey hr {margin-top:7px;margin-bottom:0px;}
+	.authKey input.type1 {width:80px;height:18px;border:none;border-radius:5px;padding-left:10px;padding-right:10px;font-family:consolas;font-size:12px;color:#555555;background-color:#efefef;vertical-align:middle;text-align:center;}
+	.authKey input.type2 {width:80px;font-size:12px;vertical-align:middle}

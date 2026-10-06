@@ -1,0 +1,127 @@
+##############################################################################################################
+# common(default)
+##############################################################################################################
+project: 
+  # 프로젝트식별을 위해 사용됨. (pom.xml에서 값을 찾음)
+  meta.group: '@project.meta.group@'
+  meta.service: '@project.meta.service@'
+  meta.basePathPrefix: '@project.meta.basePathPrefix@'
+  groupId: '@project.groupId@'
+  artifact: '@project.artifactId@'
+  version: '@project.version@'
+  name: '@project.name@'
+  description: '@project.description@'
+  build:
+    finalName: '@project.build.finalName@'
+    revision: '@project.current.build.revision@'
+    branch: '@project.current.build.branch@'
+    timestamp: '@project.current.build.timestamp@'
+    
+logging:
+  file:  
+    name: ${project.meta.basePathPrefix}logs/${project.name}/${project.name}
+    max-size: 20MB
+    max-history: 10
+  level:
+   root: DEBUG # Level : ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF
+   jdbc:
+    #connection : OFF  #열려있는 모든 번호와 연결 수립 및 해제 이벤트를 기록
+    #audit: OFF #ResultSet을 제외한 모든 JDBC 호출 정보
+    #resultset: OFF #ResultSet을 포함한 모든 JDBC 호출 정보
+    #sqlonly: OFF #SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문
+    #sqltiming: OFF #SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보
+    #resultsettable: OFF #SQL 결과 조회된 데이터
+    
+server:
+  shutdown: graceful
+  tomcat:
+    max-http-form-post-size: 10GB
+    uri-encoding: UTF-8
+  error:
+    include-exception: true
+    include-stacktrace: always
+
+spring:
+  profiles.active: local
+  application.name: ${project.name}
+  cloud.config.enabled: false
+  servlet.multipart:
+    enabled: true #멀티파트 업로드 지원여부 (default: true)
+    location: ${project.meta.basePathPrefix}data/temp #업로드된 파일의 임시 저장 공간
+    max-file-size: 10GB #파일의 최대 사이즈 (default: 1MB)
+    max-request-size: 10GB #요청의 최대 사이즈 (default: 10MB)
+  redis: 
+    enabled: ${configMap_redisHost:false}
+    host: ${configMap_redisHost:}
+    port: ${configMap_redisPort:}
+    password: ${configMap_redisPassword:}
+    cluster:
+      enabled: ${configMap_redisClusterEnabled:false}
+      nodes: ${configMap_redisClusterNodes:} # ip:port 리스트로 콤마(,)로 구분
+      password: ${configMap_redisClusterPassword:}
+  kafka:
+    enabled: false
+    bootstrap-servers: ${configMap_kafkaBootstrapServers:}
+    
+springdoc:
+  default-consumes-media-type: application/json # request media type, default: application/json
+  default-produces-media-type: application/json # response media type, default: */*
+  api-docs:
+    enabled: true
+    path: /${project.meta.service}/api-docs # default: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /${project.meta.service}/swagger # default: /swagger-ui/index.html
+    operations-sorter: alpha # 컨트롤러에서 정의한 api 메서드 순서, alpha(알파벳 오름차순), method(http method 순)
+    tags-sorter: alpha # 태그 정렬 기준
+    disable-swagger-default-url: false # disable the swagger-ui default petstore url
+    doc-expansion: none
+
+alpha:
+  mask:
+    enabled: false
+    properties:
+      - classpath:mask/mask-biz-board
+  messageSource:
+    basenames:
+      - classpath:message/message-biz
+
+---
+##############################################################################################################
+# prod
+##############################################################################################################
+server:
+  port: 9980
+spring:
+  config.activate.on-profile: prod
+
+---
+##############################################################################################################
+# dev
+##############################################################################################################
+server:
+  port: 9980
+spring:
+  config.activate.on-profile: dev
+
+---
+##############################################################################################################
+# local
+##############################################################################################################
+server:
+  port: 9980
+spring:
+  config.activate.on-profile: local
+  #devtools:
+  #  livereload.enabled: true # view단이 바뀌었을 때 자동으로 리로드
+  #  restart.enabled: false # 컨트롤러,서비스 모델단이 바뀌었을 때 프로젝트 재시작 설정 
+  redis: 
+    enabled: false
+    host: localhost
+    port: 6379
+    password: 
+  kafka:
+    enabled: false
+    bootstrap-servers: localhost:9092
+  
+##############################################################################################################

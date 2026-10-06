@@ -1,0 +1,253 @@
+##############################################################################################################
+# common(default)
+##############################################################################################################
+project: 
+  # 프로젝트식별을 위해 사용됨. (pom.xml에서 값을 찾음)
+  meta.group: '@project.meta.group@'
+  meta.service: '@project.meta.service@'
+  meta.basePathPrefix: '@project.meta.basePathPrefix@'
+  groupId: '@project.groupId@'
+  artifact: '@project.artifactId@'
+  version: '@project.version@'
+  name: '@project.name@'
+  description: '@project.description@'
+  build:
+    finalName: '@project.build.finalName@'
+    revision: '@project.current.build.revision@'
+    branch: '@project.current.build.branch@'
+    timestamp: '@project.current.build.timestamp@'
+    
+logging:
+  file:
+    name: ${project.meta.basePathPrefix}logs/${project.name}/${project.name}
+    max-size: 20MB
+    max-history: 10
+  level:
+   root: DEBUG # Level : ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF
+   jdbc:
+    #connection : OFF  #열려있는 모든 번호와 연결 수립 및 해제 이벤트를 기록
+    #audit: OFF #ResultSet을 제외한 모든 JDBC 호출 정보
+    #resultset: OFF #ResultSet을 포함한 모든 JDBC 호출 정보
+    #sqlonly: OFF #SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문
+    #sqltiming: OFF #SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보
+    #resultsettable: OFF #SQL 결과 조회된 데이터
+
+server:
+  shutdown: graceful
+  servlet.context-path: /scheduler
+  servlet.session.tracking-modes: cookie
+  tomcat:
+    uri-encoding: UTF-8
+  error:
+    include-exception: true
+    include-stacktrace: always
+          
+spring:
+  profiles.active: local
+  application.name: ${project.name}
+  servlet.multipart:
+    enabled: true #멀티파트 업로드 지원여부 (default: true)
+    location: ${project.meta.basePathPrefix}data/temp #업로드된 파일의 임시 저장 공간
+    max-file-size: 10GB #파일의 최대 사이즈 (default: 1MB)
+    max-request-size: 10GB #요청의 최대 사이즈 (default: 10MB)
+  mvc.view:
+    prefix: /WEB-INF/views/
+    suffix: .jsp
+  thymeleaf:
+    enabled: false
+    cache : false
+    prefix: classpath:/templates/
+    suffix: .html
+    viewNames: thymeleaf/*
+  devtools:
+    livereload.enabled: false
+    restart.enabled: false
+
+springdoc:
+  default-consumes-media-type: application/json # request media type, default: application/json
+  default-produces-media-type: application/json # response media type, default: */*
+  api-docs:
+    enabled: true
+    path: /api-docs # default: /v3/api-docs
+  swagger-ui:
+    enabled: false
+    path: /swagger # default: /swagger-ui.html
+    operations-sorter: alpha # 컨트롤러에서 정의한 api 메서드 순서, alpha(알파벳 오름차순), method(http method 순)
+    tags-sorter: alpha # 태그 정렬 기준
+    disable-swagger-default-url: true # disable the swagger-ui default petstore url
+    doc-expansion: none
+
+alpha:
+  messageSource:
+    basenames:
+    - classpath:message/message-common.properties
+  interceptor:
+    enabled: false
+    localeChange:
+      enabled: true
+    urlBlockCheck: 
+      enabled: true
+      noneCheckPatternList: /,/healthcheck,/error,**/favicon.ico,**/api-docs,**/swagger,**/login,**/frame,**/doLink,**/doLogin,**/doLogout,**/doRefreshSession,**/main,**/start,**/stop,**/guide,**/enable,**/execute,**/interrupt,**/resetCount,**/detail,**/support/**,**/config/**,**/meta/**,**/api/**,**/swagger-ui/**,**/swagger*
+    intervalCheck:
+      enabled: true
+      noneCheckPatternList: /,/healthcheck,/error,**/favicon.ico,**/api-docs,**/swagger,**/login,**/frame,**/doLink,**/main,**/detail,**/meta/logInfo,**/api/**,**/swagger-ui/**,**/swagger*
+    loginCheck:
+      enabled: true
+      noneCheckPatternList: /,/healthcheck,/error,**/favicon.ico,**/api-docs,**/swagger,**/login,**/frame,**/doLink,**/doLogin,**/api/**,**/swagger-ui/**,**/swagger*
+  exceptionAdvice:
+    alertNoti:
+      enabled: true
+      refererPatternList: /,**/main,**/detail		
+  batch:
+    agent:
+      appMeta: ${project.meta.basePathPrefix}data/scheduler/meta
+      appBase: ${project.meta.basePathPrefix}package
+      appPrefixList: alpha-batch-pack1,alpha-batch-pack2
+    webConsole:
+      title: 배치 스케쥴러/콘솔
+      titleHtml: 배치 스케쥴러/콘솔
+      pageSize: 10
+      confirmCheckValueYn: Y
+      accountList:
+        - "{\"userId\":\"admin\",\"userPw\":\"batchAdmin\",\"description\":\"어드민\",\"groups\":\"*\"}"
+        - "{\"userId\":\"managerA\",\"userPw\":\"managerA\",\"description\":\"관리자A\",\"groups\":\"alpha-batch-pack1,alpha-batch-pack2\"}"
+        - "{\"userId\":\"manager1\",\"userPw\":\"manager1\",\"description\":\"관리자1\",\"groups\":\"alpha-batch-pack1\"}"
+        - "{\"userId\":\"manager2\",\"userPw\":\"manager2\",\"description\":\"관리자2\",\"groups\":\"alpha-batch-pack2\"}"
+      groupList:
+        - "{\"group\":\"alpha-batch-pack1\",\"groupCode\":\"BP1\",\"groupLabel\":\"그룹1\"}"
+        - "{\"group\":\"alpha-batch-pack2\",\"groupCode\":\"BP2\",\"groupLabel\":\"그룹2\"}"
+        - "{\"group\":\"xtra\",\"groupCode\":\"etc\",\"groupLabel\":\"기타\"}"
+
+    scheduler:
+      schedulerAutoStartYn: N
+      executionLogFilePathPattern: ${project.meta.basePathPrefix}data/scheduler/taskLog/${project.name}.*.log
+      exceptionLogFilePathPattern: ${project.meta.basePathPrefix}data/scheduler/taskLog/${project.name}.*.error.log
+    task:
+      configLocation: ${project.meta.basePathPrefix}data/scheduler/taskConfig
+      contextLocation: ${project.meta.basePathPrefix}data/scheduler/taskContext
+      runnableServerList: localhost,127.0.0.1
+      logStoreType: file # file|mysql|oracle
+      logPolicy:
+        logHistoryShrinkYn: Y # 로그파일축소여부
+        logHistoryShrinkBaseDays: 10 # 로그이력축소기준 days
+        logHistoryShrinkBaseRows: 100 # 로그이력축소기준 rows
+---
+##############################################################################################################
+# prod
+##############################################################################################################
+server:
+  port: 8090
+
+spring:
+  config.activate.on-profile: prod  
+
+alpha:
+  batch:
+    scheduler: 
+      schedulerAutoStartYn: N
+    scanConfig: 
+     scanPatternList: 
+       - /app/support/addon/.repository/**/*schedulerMetaInfo.json
+       - /azure.ide/workspace/**/target/classes/META-INF/schedulerMetaInfo.json
+  domain:
+    board:
+      description: board(예제)
+      datasource:
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:mem:board;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:config/schema/board-schema.sql'
+        username: sa
+        password:
+    score:
+      description: score(예제)
+      datasource:
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:mem:score;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:config/schema/score-schema.sql'
+        username: sa
+        password:
+        
+---
+##############################################################################################################
+# dev
+##############################################################################################################
+server:
+  port: 8090
+
+spring:
+  config.activate.on-profile: dev
+
+alpha:
+  batch:
+    scheduler: 
+      schedulerAutoStartYn: N
+    scanConfig: 
+     scanPatternList: 
+       - /app/support/addon/.repository/**/*schedulerMetaInfo.json
+       - /azure.ide/workspace/**/target/classes/META-INF/schedulerMetaInfo.json
+  domain:
+    board:
+      description: board(예제)
+      datasource:
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:mem:board;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:config/schema/board-schema.sql'
+        username: sa
+        password:
+    score:
+      description: score(예제)
+      datasource:
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:mem:score;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:config/schema/score-schema.sql'
+        username: sa
+        password:
+
+---
+##############################################################################################################
+# local
+##############################################################################################################
+server:
+  port: 8091
+
+spring:
+  config.activate.on-profile: local
+  devtools:
+   ##########################################################################################################
+   # devtools 사용시 RestartClassLoader를 사용한다. (devtools 미사용시 AppClassLoader사용)
+   # Spring Boot Devtools를 사용하면, 프로젝트를 IDE에서 열어 실행할 때 RestartClassLoader가 애플리케이션 클래스를 로드합니다. 
+   # (Spring Boot Devtools를 사용하지 않으면, dependency에 정의된 .jar 파일들은 System ClassLoader가 로드)
+   # 설정한 의존성(lib)에 따라 RestartClassLoader를 사용시 문제가 발생 하기도 함. (applicationAware를 사용한 Bean 참조 오류 발생)
+   # 배치기능중 '로그제외목록' 기능은 devTools을 사용시 오류 발생
+   ##########################################################################################################
+    livereload.enabled: true
+    restart.enabled: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+springdoc:
+  swagger-ui:
+    enabled: true
+
+alpha:
+  batch:
+    webConsole:
+      confirmCheckValueYn: N  
+    scanConfig: 
+      scanPatternList: 
+        - /azure.ide/workspace/**/target/classes/META-INF/schedulerMetaInfo.json
+  domain:
+    board:
+      description: board(예제)
+      datasource:
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:mem:board;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:config/schema/board-schema.sql'
+        username: sa
+        password:
+    score:
+      description: score(예제)
+      datasource:
+        driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbcUrl: jdbc:log4jdbc:h2:mem:score;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:config/schema/score-schema.sql'
+        username: sa
+        password:
+
+##############################################################################################################

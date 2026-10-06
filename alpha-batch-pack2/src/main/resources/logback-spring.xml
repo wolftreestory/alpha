@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<!-- level : ALL > TRACE > DEBUG > INFO > WARN > ERROR > FATAL > OFF --> 
+
+<configuration scan="true" scanPeriod="60 seconds">
+
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+	        <charset>UTF-8</charset>
+	        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			<!-- <pattern>[%d{HH:mm:ss.SSS}][%thread][%-5level][%logger{100}][%method:%line] %msg%n</pattern> -->
+            <!-- <pattern>[%d{HH:mm:ss.SSS} %5level %-20.20thread %-30.30class %-25.25method:%-3.3line] %msg%n</pattern> -->
+        </encoder>
+    </appender>
+
+	<appender name="defaultFileAppender" class="com.alpha.batch.config.BatchFileAppender">
+		<batchLogFilePattern>${LOG_FILE}.log</batchLogFilePattern>
+		<maxHistory>7</maxHistory>
+		<encoder>
+			<charset>UTF-8</charset>
+			<!-- <pattern>[%d{ISO8601}] [%5level] [%thread] [%class] [%method:%line] %msg%n</pattern> -->
+			<pattern>${FILE_LOG_PATTERN}</pattern> 
+		</encoder>
+	</appender>
+
+	<appender name="sqlFileAppender" class="com.alpha.batch.config.BatchFileAppender">
+		<batchLogFilePattern>${LOG_FILE}.sql.log</batchLogFilePattern>
+		<maxHistory>7</maxHistory>
+		<encoder>	
+			<charset>UTF-8</charset>              	 
+			<pattern>[%d{ISO8601}] %msg%n</pattern>
+		</encoder>
+    </appender>
+    
+    <root level="DEBUG">
+		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="defaultFileAppender" />
+    </root>
+
+	<logger name="org.jboss.logging" additivity="true" level="error" />	
+	<logger name="org.ulisesbocchio" additivity="true" level="error" />	
+	<logger name="reactor.util.Loggers" additivity="true" level="error" />	
+	<logger name="reactor.netty.tcp.TcpResources" additivity="true" level="error" />	
+
+	<logger name="org.springframework" additivity="true" level="error" />	
+	<logger name="_org.springframework" additivity="true" level="error" />	
+	
+	<logger name="org.apache" additivity="true" level="error" />	
+	<logger name="org.apache.ibatis" additivity="true" level="error" />	
+	
+	<logger name="com.zaxxer.hikari" additivity="true" level="error" />	
+	<logger name="org.mybatis.spring" additivity="true" level="error" />	
+	<logger name="org.hibernate" additivity="true" level="error" />	
+	<logger name="log4jdbc.debug" additivity="true" level="error" />	
+
+	<logger name="io.netty" additivity="true" level="error" />	
+	<logger name="io.grpc.netty" additivity="true" level="error" />	
+	<logger name="net.schmizz" additivity="true" level="error" />	
+
+	<logger name="springfox.documentation" additivity="true" level="error" />	
+	<logger name="io.swagger" additivity="true" level="error" />	
+
+	<!-- 
+	** log4jdbc SQL로그 ******************************************************************************
+	jdbc.connection: 열려있는 모든 번호와 연결 수립 및 해제 이벤트를 기록
+	jdbc.audit: ResultSet을 제외한 모든 JDBC 호출 정보
+	jdbc.resultset: ResultSet을 포함한 모든 JDBC 호출 정보
+	jdbc.sqlonly: SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문
+	jdbc.sqltiming : SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보
+	jdbc.resultsettable: SQL 결과 조회된 데이터
+	************************************************************************************************
+	-->
+	<logger name="jdbc.connection" additivity="false"/>
+	<logger name="jdbc.audit" additivity="false"/>
+	<logger name="jdbc.resultset" additivity="false"/>
+	<logger name="jdbc.sqlonly" additivity="false"/>
+
+	<logger name="jdbc.sqltiming" additivity="true">
+		<appender-ref ref="sqlFileAppender" />
+	</logger>
+	<logger name="jdbc.resultsettable" additivity="true">
+		<appender-ref ref="sqlFileAppender" />
+	</logger>
+
+</configuration>

@@ -1,0 +1,123 @@
+.center {display:flex;justify-content:center;align-items:center;flex-direction:column;width:100%;text-align:center;}
+
+.titleInfo {text-align:left;}
+.titleInfo p {width:1386px;text-align:left;padding:7px;color:#555555;font-family:verdana,sans-serif;font-size:17px;font-weight:bold;background:#f9f9f9;}	
+.titleInfo table {width:1400px;font-family:verdana,sans-serif;border:none;border-collapse:collapse;}
+.titleInfo td {border-top:none;padding:3px;font-family:verdana,sans-serif;font-size:13px;text-align:right;height:22px;}
+	
+.gap3 {height:3px;width:1100px;background-color:#ffffff;}
+
+.line {width:100%;}
+.line table.table {width:100%;height:1px;border:0px;padding:0px;margin-left:auto;margin-right:auto;background-color:#ffffff;}
+.line tr.tr {border:none;}	
+.line td.td1 {height:7px;border:0px;padding:0px;background-color:#ffffff;}	
+.line td.td2 {height:1px;border:0px;padding:0px;background-color:#acacac;}	
+
+.tab {width:1398px;overflow:hidden;border:1px solid #cccccc;background-color:#f1f1f1;}
+.tab table {width:100%;border:none;padding:0px;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tab td {border:none;padding:0px;}
+.tab button {background-color:inherit;width:100px;border:none;outline:none;cursor:pointer;padding:8px 8px;font-size:14px;}
+.tab button.transition {transition:0.3s;}
+.tab button.left {float:left;}
+.tab button.right {float:right;}
+.tab button.active {background-color:#8899bb;color:#f0f0f0;}
+.tab button:hover {background-color:#dddddd;color:#000000;}
+
+.tabContent {width:1374px;display:none;padding:12px 12px;border:1px solid #ccc;border-top:none;}
+
+.tabContent1 {width:100%;text-align:left}
+.tabContent1 table {width:100%;border:none;padding:none;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent1 tr {border-bottom:1px solid #dfdfdf;}
+.tabContent1 tr:last-child {border-bottom:none;}
+.tabContent1 td {border:none;padding:none;color:#000000;height:24px;font-size:14px;text-align:left;}
+.tabContent1 input {font-family:verdana,sans-serif;font-size:13px;vertical-align:middle;}
+.tabContent1 div.sub1 {width:100%;text-align:left}
+.tabContent1 div.sub1 table {width:100%;border:none;padding:0px;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent1 div.sub1 tr {border-top:1px solid #dfdfdf;}
+.tabContent1 div.sub1 tr:last-child {border-bottom:none;}
+.tabContent1 div.sub1 td {height:20px;border:none;padding:0px 10px;color:#000000;font-size:13px;text-align:left;}	
+.tabContent1 div.subX {width:100%;text-align:left}
+.tabContent1 div.subX table {width:100%;border:none;padding:0px;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent1 div.subX tr {border-top:none solid #dfdfdf;}
+.tabContent1 div.subX tr:last-child {border-bottom:none;}
+.tabContent1 div.subX td {height:20px;border:none;padding:0px 10px;color:#000000;font-size:13px;text-align:left;}		
+
+.tabContent2 {width:100%;text-align:left}
+.tabContent2 table {width:100%;border:none;padding:none;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent2 td {height:22px;border:none;padding:none;color:#000000;font-size:14px;text-align:left;}
+.tabContent2 td.sch1 {width:170px;height:22px;border:none;padding:0px;text-align:left;color:#000000;background-color:#efefef;}	
+.tabContent2 td.sch2 {width:500px;height:22px;border:none;padding:0px;text-align:left;}	
+.tabContent2 td.sch3 {width:700px;height:22px;border:none;padding:0px;color:#898989;font-family:verdana,sans-serif;font-size:13px;text-align:left;}
+.tabContent2 td.sch4 {width:670px;height:22px;border:none;padding:0px;color:#898989;font-family:verdana,sans-serif;font-size:13px;text-align:left;}
+.tabContent2 td.sch5 {width:50px;height:22px;border:none;padding:0px;color:#898989;font-family:verdana,sans-serif;font-size:13px;text-align:left;}
+.tabContent2 td.command {width:150px;}	
+.tabContent2 td.guide {width:500px;color:#898989;font-family:verdana,sans-serif;font-size:13px;text-align:left;}		
+.tabContent2 input {font-family:verdana,sans-serif;font-size:13px;vertical-align:middle;}
+.tabContent2 input.textTypeX {width:10px;border:none;padding-left:4px;height:22px;color:#606060;background-color:#ffffff;}
+.tabContent2 input.textTypeY {width:24px;border:none;padding-left:4px;height:22px;color:#606060;background-color:#ffffff;text-align:center;}
+.tabContent2 input.textType21 {width:350px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;}
+.tabContent2 input.textType22 {width:150px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;text-align:left;}	
+.tabContent2 input.textType23 {width:350px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;text-align:left;}
+.tabContent2 input.textType24 {width:500px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;text-align:left;}
+
+.tabContent2 textarea {font-family:verdana,sans-serif;font-size:13px;color:#000000;width:552px;height:35px;background-color:#efefef;border:1px;}
+.tabContent2 a {font-family:verdana,sans-serif;font-size:13px;}
+.tabContent2 div.sub1 {width:1420px;text-align:left}
+.tabContent2 div.sub1 table {width:100%;border:none;padding:0px;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent2 div.sub1 tr {border-top:1px solid #dfdfdf;}
+.tabContent2 div.sub1 tr:last-child {border-bottom:1px solid #dfdfdf;}
+.tabContent2 div.sub1 td {border:none;padding:2px 10px;color:#000000;height:22px;font-size:14px;text-align:left;}		
+.tabContent2 div.sub1 input.textTypeA {width:30px;height:15px;border:none;padding-left:10px;padding-right:10px;color:#606060;background-color:#efefef;}
+.tabContent2 div.sub1 input.textTypeB {width:30px;height:15px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;}
+	
+.tabContent3 {width:100%;text-align:left}
+.tabContent3 table {width:100%;border:none;padding:none;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent3 td {height:22px;border:none;padding:none;color:#000000;font-size:14px;text-align:left;}
+.tabContent3 td.command {width:150px;}	
+.tabContent3 td.guide {width:500px;color:#898989;font-family:verdana,sans-serif;font-size:13px;text-align:left;}		
+.tabContent3 input {font-family:verdana,sans-serif;font-size:13px;vertical-align:middle;}
+.tabContent3 input.textTypeX {width:10px;border:none;padding-left:4px;height:22px;color:#606060;background-color:#ffffff;}
+.tabContent3 input.textType31 {width:1030px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#606060;background-color:#efefef;}
+.tabContent3 input.textType32 {width:1030px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;}
+.tabContent3 input.textType33 {width:150px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#606060;background-color:#efefef;text-align:center;}
+.tabContent3 input.textType34 {width:719px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;text-align:left;}
+.tabContent3 input.textType35 {width:100px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;text-align:center;}
+.tabContent3 a {font-family:verdana,sans-serif;font-size:13px;}
+.tabContent3 div.sub1 {width:1048px;text-align:left}
+.tabContent3 div.sub1 table {width:100%;border:none;padding:0px;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent3 div.sub1 tr {border-top:1px solid #dfdfdf;}
+.tabContent3 div.sub1 tr:last-child {border-bottom:1px solid #dfdfdf;}
+.tabContent3 div.sub1 td {border:none;padding:2px 10px;color:#000000;height:27px;font-size:14px;text-align:left;}		
+.tabContent3 div.sub1 input.textTypeA {width:30px;height:15px;border:none;padding-left:10px;padding-right:10px;color:#606060;background-color:#efefef;}
+.tabContent3 div.sub1 input.textTypeB {width:30px;height:15px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;}
+
+.tabContent4 {width:100%;text-align:left;}
+.tabContent4 table {width:100%;border:none;padding:none;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent4 table.top {width:100%;border:none;padding:none;font-family:verdana,sans-serif;border-collapse:collapse;background:#e5e5e5;}
+.tabContent4 table.bottom {width:100%;border:0px;padding:none;}
+.tabContent4 td {height:22px;border:none;padding:none;color:#000000;font-size:14px;text-align:left;}
+.tabContent4 textarea {width:100%;height:70px;font-family:verdana,sans-serif;font-size:13px;background-color:transparent;}
+.tabContent4 input {font-family:verdana,sans-serif;font-size:13px;vertical-align:middle;}
+.tabContent4 input.textTypeX {width:10px;border:none;padding-left:4px;height:22px;color:#606060;background-color:#ffffff;}
+.tabContent4 input.textType41 {width:21px;height:12px;border:none;padding-left:7px;padding-right:7px;color:#000000;background-color:#efefef;vertical-align:middle;text-align:center;font-size:13px;}
+.tabContent4 input.textType42 {width:70px;height:12px;border:none;padding-left:2px;padding-right:2px;color:#606060;background-color:#efefef;vertical-align:middle;text-align:center;font-size:13px;}
+.tabContent4 input.textType43 {width:70px;height:12px;border:none;padding-left:0px;padding-right:0px;color:#606060;background-color:#ffffff;vertical-align:middle;text-align:left;font-size:13px;}
+.tabContent4 input.textType44 {width:100px;height:16px;border:none;padding-left:7px;padding-right:7px;color:#000000;background-color:#efefef;vertical-align:middle;text-align:center;font-size:13px;}
+
+.tabContent5 {width:100%;text-align:left}
+.tabContent5 table {width:100%;border:none;padding:none;font-family:verdana,sans-serif;border-collapse:collapse;}
+.tabContent5 td {height:22px;border:none;padding:none;color:#000000;font-size:14px;text-align:left;}
+.tabContent5 input {font-family:verdana,sans-serif;font-size:13px;vertical-align:middle;}
+.tabContent5 input.textTypeX {width:10px;border:none;padding-left:4px;height:22px;color:#606060;background-color:#ffffff;}
+.tabContent5 input.textType51 {width:200px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#606060;background-color:#efefef;}
+.tabContent5 input.textType52 {width:574px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#000000;background-color:#efefef;}
+.tabContent5 input.textType53 {width:574px;height:22px;border:none;padding-left:10px;padding-right:10px;color:#606060;background-color:#efefef;}
+
+.historyList {width:1400px;text-align:right}
+.historyList form {float:right;margin:2px;}
+.historyList input {font-family:verdana,sans-serif;font-size:13px;vertical-align:middle;}
+.historyList table {width:1400px;font-family:verdana,sans-serif;border-collapse:collapse;}
+.historyList th {border:1px solid #8899bb;text-align:left;padding:2px;color:#f0f0f0;font-size:14px;height:25px;background-color:#8899bb;}	
+.historyList td {border:1px solid #f0f0f0;text-align:left;padding:2px;color:#000000;font-size:13px;height:35px;}
+.historyList tr:nth-child(odd) {background-color:#f4f4f4;}	
+.historyList textarea {font-family:verdana,sans-serif;font-size:13px;color:#000000;width:350px;height:25px;background-color:transparent;border:1px;}
