@@ -11,7 +11,6 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @ConditionalOnExpression("T(com.alpha.base.MybatisConfig).isEnabled()")
 @ConditionalOnProperty(prefix="spring.datasource.hikari",name="jdbc-url")
-@ConditionalOnBean(name=DataSourceConfig.DATA_SOURCE)
 @MapperScan(basePackages="com.alpha.**.mapper", sqlSessionFactoryRef=MybatisConfig.SQL_SESSION_FACTORY)
 public class MybatisConfig {
 
