@@ -95,7 +95,19 @@ jasypt:
   encryptor:
     bean: jasyptStringEncryptor
     #password: alpha123456789
-    
+
+management:
+  server:
+    port: 9971
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+           
 alpha:
   mask:
     enabled: false
@@ -104,6 +116,8 @@ alpha:
   messageSource:
     basenames:
     - classpath:message/message-biz
+  security:
+    enabled: true
 
 ---
 ##############################################################################################################
