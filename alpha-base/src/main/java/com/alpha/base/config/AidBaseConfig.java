@@ -118,7 +118,6 @@ public class AidBaseConfig {
 			//log.info(">> alpha.security.enabled: {}",securityEnabled);	
 			if(securityEnabled.toLowerCase().equals("false")) {
 				exclusions.add("org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration");
-				exclusions.add("org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration");
 			}
 
 			String redisEnabled = props.getProperty("spring.redis.enabled","false");
