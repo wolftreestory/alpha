@@ -22,6 +22,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -148,7 +149,7 @@ public class SecurityConfig {
 	}
     
 	@Bean
-	@Order(0)
+	@Order(Ordered.HIGHEST_PRECEDENCE)
 	SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
 	    return httpSecurity.requestMatcher(new AntPathRequestMatcher("/actuator/**"))
 	        .csrf(csrf -> csrf.disable())
@@ -157,6 +158,7 @@ public class SecurityConfig {
 	}
 	
 	@Bean
+	@Order(Ordered.HIGHEST_PRECEDENCE+1)	
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		// CSRF 미적용

@@ -97,8 +97,6 @@ jasypt:
     #password: alpha123456789
 
 management:
-  server:
-    port: 9971
   endpoints:
     web:
       exposure:
