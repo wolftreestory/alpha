@@ -115,7 +115,7 @@ alpha:
     basenames:
     - classpath:message/message-biz
   security:
-    enabled: true
+    enabled: false
 
 ---
 ##############################################################################################################
