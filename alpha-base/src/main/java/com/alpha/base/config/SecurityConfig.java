@@ -176,13 +176,6 @@ public class SecurityConfig {
 		defaultSecurityProps.getPermitAll().forEach(pattern->authorizeRequests(Type.permitAll,httpSecurity,pattern));
 		bizSecurityProps.getPermitAll().forEach(pattern->authorizeRequests(Type.permitAll,httpSecurity,pattern));
 
-		// authenticated (인증적용)
-		defaultSecurityProps.getAuthenticated().forEach(pattern->authorizeRequests(Type.authenticated,httpSecurity,pattern));
-		bizSecurityProps.getAuthenticated().forEach(pattern->authorizeRequests(Type.authenticated,httpSecurity,pattern));
-		if(defaultSecurityProps.getAuthenticated().isEmpty() && bizSecurityProps.getAuthenticated().isEmpty()) {
-			httpSecurity.authorizeRequests(requests -> requests.anyRequest().authenticated());			
-		}
-
         // hasAnyAuthority (권한, authority 는 접두어가 붙지 않음)
 		defaultSecurityProps.getAuthorities().forEach((pattern,authorities)->authorizeRequests(Type.authority,httpSecurity,pattern,authorities));
 		bizSecurityProps.getAuthorities().forEach((pattern,authorities)->authorizeRequests(Type.authority,httpSecurity,pattern,authorities));
@@ -190,6 +183,13 @@ public class SecurityConfig {
 		// hasAnyRole (권한, role 은 설정한 값에 접두어인 ROLE_이 붙음)
 		defaultSecurityProps.getRoles().forEach((pattern,roles)->authorizeRequests(Type.roles,httpSecurity,pattern,roles));
 		bizSecurityProps.getRoles().forEach((pattern,roles)->authorizeRequests(Type.roles,httpSecurity,pattern,roles));
+
+		// authenticated (인증적용)
+		defaultSecurityProps.getAuthenticated().forEach(pattern->authorizeRequests(Type.authenticated,httpSecurity,pattern));
+		bizSecurityProps.getAuthenticated().forEach(pattern->authorizeRequests(Type.authenticated,httpSecurity,pattern));
+		if(defaultSecurityProps.getAuthenticated().isEmpty() && bizSecurityProps.getAuthenticated().isEmpty()) {
+			httpSecurity.authorizeRequests(requests -> requests.anyRequest().authenticated());
+		}
 		
         // Exception Handling
 		httpSecurity.exceptionHandling(handling -> handling
