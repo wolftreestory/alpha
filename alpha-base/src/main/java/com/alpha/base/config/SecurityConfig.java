@@ -147,18 +147,8 @@ public class SecurityConfig {
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()); //정적 자원 ignoring
 				//.antMatchers(defaultSecurityProps.getPermitAll()==null?new String[] {}:defaultSecurityProps.getPermitAll().toArray(String[]::new));
 	}
-    
+
 	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)
-	SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-	    return httpSecurity.requestMatcher(new AntPathRequestMatcher("/actuator/**"))
-	        .csrf(csrf -> csrf.disable())
-	        .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-	        .build();
-	}
-	
-	@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE+1)	
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
 		// CSRF 미적용
