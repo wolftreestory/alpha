@@ -114,8 +114,6 @@ alpha:
     messageSource:
         basenames:
             - classpath:message/message-biz
-    security:
-      enabled: true
 
 ---
 ##############################################################################################################
