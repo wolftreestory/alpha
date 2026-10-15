@@ -22,52 +22,52 @@ import org.springframework.util.unit.DataSize;
 
 import com.alpha.base.context.MaskContext;
 import com.alpha.base.support.aid.AwareAidPack;
-import com.alpha.base.support.aid.BeanAidPack;
-import com.alpha.base.support.aid.RequestAttributesAidPack;
 import com.alpha.base.support.aid.AwareAidPack.ApplicationContextAid;
+import com.alpha.base.support.aid.BeanAidPack;
 import com.alpha.base.support.aid.BeanAidPack.BeanAid;
+import com.alpha.base.support.aid.RequestAttributesAidPack;
 import com.alpha.base.support.aid.RequestAttributesAidPack.RequestAttributesAid;
 import com.alpha.base.support.util.Base64UtilPack;
-import com.alpha.base.support.util.BashProcessUtilPack;
-import com.alpha.base.support.util.CompressUtilPack;
-import com.alpha.base.support.util.CryptoUtilPack;
-import com.alpha.base.support.util.FileUtilPack;
-import com.alpha.base.support.util.HttpRequestUtilPack;
-import com.alpha.base.support.util.JsonUtilPack;
-import com.alpha.base.support.util.KafkaUtilPack;
-import com.alpha.base.support.util.LobConverterUtilPack;
-import com.alpha.base.support.util.LocaleUtilPack;
-import com.alpha.base.support.util.MaskUtilPack;
-import com.alpha.base.support.util.MessageUtilPack;
-import com.alpha.base.support.util.ObjectMapperUtilPack;
-import com.alpha.base.support.util.PropertiesUtilPack;
-import com.alpha.base.support.util.RestTemplateUtilPack;
-import com.alpha.base.support.util.SessionUtilPack;
-import com.alpha.base.support.util.SftpUtilPack;
-import com.alpha.base.support.util.SystemUtilPack;
-import com.alpha.base.support.util.ThreadUtilPack;
-import com.alpha.base.support.util.TimeUtilPack;
-import com.alpha.base.support.util.TransactionUtilPack;
 import com.alpha.base.support.util.Base64UtilPack.Base64Util;
+import com.alpha.base.support.util.BashProcessUtilPack;
 import com.alpha.base.support.util.BashProcessUtilPack.BashProcessUtil;
+import com.alpha.base.support.util.CompressUtilPack;
 import com.alpha.base.support.util.CompressUtilPack.CompressUtil;
+import com.alpha.base.support.util.CryptoUtilPack;
 import com.alpha.base.support.util.CryptoUtilPack.CryptoUtil;
+import com.alpha.base.support.util.FileUtilPack;
 import com.alpha.base.support.util.FileUtilPack.FileUtil;
+import com.alpha.base.support.util.HttpRequestUtilPack;
 import com.alpha.base.support.util.HttpRequestUtilPack.HttpRequestUtil;
+import com.alpha.base.support.util.JsonUtilPack;
 import com.alpha.base.support.util.JsonUtilPack.JsonUtil;
+import com.alpha.base.support.util.KafkaUtilPack;
 import com.alpha.base.support.util.KafkaUtilPack.KafkaUtil;
+import com.alpha.base.support.util.LobConverterUtilPack;
 import com.alpha.base.support.util.LobConverterUtilPack.LobConverterUtil;
+import com.alpha.base.support.util.LocaleUtilPack;
 import com.alpha.base.support.util.LocaleUtilPack.LocaleUtil;
+import com.alpha.base.support.util.MaskUtilPack;
 import com.alpha.base.support.util.MaskUtilPack.MaskUtil;
+import com.alpha.base.support.util.MessageUtilPack;
 import com.alpha.base.support.util.MessageUtilPack.MessageUtil;
+import com.alpha.base.support.util.ObjectMapperUtilPack;
 import com.alpha.base.support.util.ObjectMapperUtilPack.ObjectMapperUtil;
+import com.alpha.base.support.util.PropertiesUtilPack;
 import com.alpha.base.support.util.PropertiesUtilPack.PropertiesUtil;
+import com.alpha.base.support.util.RestTemplateUtilPack;
 import com.alpha.base.support.util.RestTemplateUtilPack.RestTemplateUtil;
+import com.alpha.base.support.util.SessionUtilPack;
 import com.alpha.base.support.util.SessionUtilPack.SessionUtil;
+import com.alpha.base.support.util.SftpUtilPack;
 import com.alpha.base.support.util.SftpUtilPack.SftpUtil;
+import com.alpha.base.support.util.SystemUtilPack;
 import com.alpha.base.support.util.SystemUtilPack.SystemUtil;
+import com.alpha.base.support.util.ThreadUtilPack;
 import com.alpha.base.support.util.ThreadUtilPack.ThreadUtil;
+import com.alpha.base.support.util.TimeUtilPack;
 import com.alpha.base.support.util.TimeUtilPack.TimeUtil;
+import com.alpha.base.support.util.TransactionUtilPack;
 import com.alpha.base.support.util.TransactionUtilPack.TransactionUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -114,12 +114,12 @@ public class AidBaseConfig {
 			
 			Properties props = PropertiesConfig.loadYamlProperties();
 			
-			//String securityEnabled = props.getProperty("alpha.security.enabled","false");
+			String securityEnabled = props.getProperty("alpha.security.enabled","false");
 			//log.info(">> alpha.security.enabled: {}",securityEnabled);	
-			//if(securityEnabled.toLowerCase().equals("false")) {
-				//exclusions.add("org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration");
-				//exclusions.add("org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration");
-			//}
+			if(securityEnabled.toLowerCase().equals("false")) {
+				exclusions.add("org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration");
+				exclusions.add("org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration");
+			}
 
 			String redisEnabled = props.getProperty("spring.redis.enabled","false");
 			//log.info(">> spring.redis.enabled: {}",redisEnabled);	
